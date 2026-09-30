@@ -35,10 +35,16 @@ pnpm pages:build
 - `dist/screen/`：大屏
 - `dist/404.html`：深层路由刷新时回到对应应用
 
-发布目标：
+`dist` 分支根目录已经是可发布的静态包。开启 Pages 需要仓库管理员权限；当前自动化令牌调用 Pages 接口会返回 403，因此要在网页上打开一次：
+
+1. 打开仓库 Settings → Pages：https://github.com/dxhcode/park-campus/settings/pages
+2. Build and deployment 选择 **Deploy from a branch**
+3. Branch 选择 `dist`，文件夹选择 `/ (root)`，保存
+
+保存后的地址：
 
 - https://dxhcode.github.io/park-campus/
 - https://dxhcode.github.io/park-campus/admin/
 - https://dxhcode.github.io/park-campus/screen/
 
-Pages 源为 `dist` 分支的根目录。
+站点从已有的 `dist` 分支构建。若保存后短时间仍是 404，等 GitHub 完成第一次构建即可。
