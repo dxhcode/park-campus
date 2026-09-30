@@ -79,7 +79,6 @@ function onMenuClick(info: { key: string | number }) {
           :selected-keys="selectedKeys"
           mode="inline"
           theme="dark"
-          :inline-collapsed="app.collapsed"
           :items="menuItems"
           @click="onMenuClick"
         />
