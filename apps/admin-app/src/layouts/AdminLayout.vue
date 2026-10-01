@@ -1,16 +1,25 @@
 <script setup lang="ts">
 import { computed, h, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import type { MenuProps } from "ant-design-vue";
-import { BellOutlined, MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons-vue";
+import { message, type MenuProps } from "ant-design-vue";
+import { BellOutlined, LogoutOutlined, MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons-vue";
 import { site } from "@park/shared";
 import { leafMenus, menuTree, type MenuNode } from "@/menus";
 import { useAppStore } from "@/stores/app";
+import { useSessionStore } from "@/stores/session";
 
 const route = useRoute();
 const router = useRouter();
 const app = useAppStore();
+const session = useSessionStore();
 const openKeys = ref<string[]>([]);
+const screenHref = import.meta.env.DEV ? "http://localhost:5174/overview" : "/park-campus/screen/";
+
+function owningLeaf(path: string) {
+  return leafMenus()
+    .filter((item) => item.path && (path === item.path || path.startsWith(`${item.path}/`)))
+    .sort((a, b) => b.path!.length - a.path!.length)[0];
+}
 
 function toItems(nodes: MenuNode[]): MenuProps["items"] {
   return nodes.map((node) => {
@@ -29,21 +38,29 @@ function toItems(nodes: MenuNode[]): MenuProps["items"] {
 const menuItems = computed(() => toItems(menuTree));
 
 const selectedKeys = computed(() => {
-  const hit = leafMenus().find((item) => item.path === route.path);
+  const hit = owningLeaf(route.path);
   return hit ? [hit.key] : [];
 });
 
 const crumbs = computed(() => {
-  const leaf = leafMenus().find((item) => item.path === route.path);
+  if (Array.isArray(route.meta.crumbs) && route.meta.crumbs.length) return route.meta.crumbs;
+  const leaf = owningLeaf(route.path);
   if (!leaf) return [String(route.meta.title ?? "页面")];
   const parent = menuTree.find((node) => node.children?.some((child) => child.key === leaf.key));
   return parent ? [parent.title, leaf.title] : [leaf.title];
 });
 
 function syncOpenKeys() {
-  const parent = menuTree.find((node) => node.children?.some((child) => child.path === route.path));
+  const leaf = owningLeaf(route.path);
+  const parent = menuTree.find((node) => node.children?.some((child) => child.key === leaf?.key));
   if (!parent || app.collapsed) return;
   if (!openKeys.value.includes(parent.key)) openKeys.value = [...openKeys.value, parent.key];
+}
+
+function logout() {
+  session.logout();
+  message.success("已退出登录");
+  router.replace("/login");
 }
 
 watch(() => route.path, syncOpenKeys, { immediate: true });
@@ -83,7 +100,7 @@ function onMenuClick(info: { key: string | number }) {
           @click="onMenuClick"
         />
       </div>
-      <div v-show="!app.collapsed" class="sider-foot">原型环境 · 菜单已接通 · 数据未接入</div>
+      <div v-show="!app.collapsed" class="sider-foot">演示会话 · 报修与缴费已接通</div>
     </a-layout-sider>
 
     <a-layout class="main">
@@ -102,18 +119,40 @@ function onMenuClick(info: { key: string | number }) {
           </div>
         </div>
         <div class="header-right">
-          <a-badge dot>
-            <a-button type="text" aria-label="通知">
-              <BellOutlined />
-            </a-button>
-          </a-badge>
-          <div class="user">
-            <a-avatar :size="32">运</a-avatar>
-            <div>
-              <strong>演示账号</strong>
-              <span>园区管理员</span>
-            </div>
-          </div>
+          <a :href="screenHref" class="screen-link">态势大屏</a>
+          <a-popover placement="bottomRight" title="待关注">
+            <template #content>
+              <div class="notice">
+                <router-link to="/workorders">海纳楼客梯仍在处理，期望今日恢复</router-link>
+                <router-link to="/billing">有账单已过到期日，可去登记催缴</router-link>
+              </div>
+            </template>
+            <a-badge dot>
+              <a-button type="text" aria-label="通知">
+                <BellOutlined />
+              </a-button>
+            </a-badge>
+          </a-popover>
+          <a-dropdown placement="bottomRight">
+            <button type="button" class="user">
+              <a-avatar :size="32">{{ session.user?.avatarText ?? "园" }}</a-avatar>
+              <div>
+                <strong>{{ session.user?.displayName ?? "未登录" }}</strong>
+                <span>{{ session.user?.roleName ?? "请重新登录" }}</span>
+              </div>
+            </button>
+            <template #overlay>
+              <a-menu>
+                <a-menu-item key="org" disabled>{{ session.user?.org }}</a-menu-item>
+                <a-menu-item key="at" disabled>登录于 {{ session.user?.loginAt }}</a-menu-item>
+                <a-menu-divider />
+                <a-menu-item key="logout" @click="logout">
+                  <LogoutOutlined />
+                  退出登录
+                </a-menu-item>
+              </a-menu>
+            </template>
+          </a-dropdown>
         </div>
       </a-layout-header>
       <a-layout-content class="content">
@@ -200,7 +239,7 @@ function onMenuClick(info: { key: string | number }) {
   border-inline-end: 0 !important;
 }
 .menu-wrap :deep(.ant-menu-item-selected) {
-  box-shadow: inset 2px 0 0 #67e8f9;
+  box-shadow: inset 2px 0 0 #67e8f9, 0 0 18px rgba(103, 232, 249, 0.12);
 }
 .sider-foot {
   margin: 8px 16px 16px;
@@ -225,9 +264,19 @@ function onMenuClick(info: { key: string | number }) {
   height: 72px;
   padding: 0 20px;
   line-height: 1.3;
-  background: rgba(255, 255, 255, 0.78);
+  background: rgba(255, 255, 255, 0.82);
   backdrop-filter: blur(16px);
   border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+  box-shadow: inset 0 -2px 0 rgba(29, 109, 255, 0.08);
+}
+.header::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #1d6dff, #67e8f9 46%, #f5c16c);
 }
 .header-left,
 .header-right,
@@ -244,6 +293,35 @@ function onMenuClick(info: { key: string | number }) {
 .fold {
   width: 40px;
   height: 40px;
+}
+.screen-link {
+  padding: 6px 10px;
+  border-radius: 999px;
+  color: #0f172a;
+  font-size: 13px;
+  text-decoration: none;
+  border: 1px solid rgba(29, 109, 255, 0.18);
+  background: rgba(29, 109, 255, 0.06);
+}
+.screen-link:hover {
+  color: #1d6dff;
+}
+.notice {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 240px;
+}
+.notice a {
+  color: #1d4ed8;
+}
+.user {
+  border: 0;
+  background: rgba(29, 109, 255, 0.06);
+  border-radius: 999px;
+  padding: 4px 12px 4px 4px;
+  cursor: pointer;
+  color: inherit;
 }
 .user strong,
 .user span {

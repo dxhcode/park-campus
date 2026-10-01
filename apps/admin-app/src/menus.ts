@@ -93,7 +93,7 @@ export const menuTree: MenuNode[] = [
     icon: ToolOutlined,
     path: "/workorders",
     group: "物业服务",
-    description: "报修受理、派单与完工闭环。工单流将在后续阶段接入。",
+    description: "报修受理、派单、验收与完工。示例数据可筛选、新建和编辑。",
     highlights: ["待受理", "处理中", "已完工", "超时提醒"],
   },
   {
@@ -102,7 +102,7 @@ export const menuTree: MenuNode[] = [
     icon: PayCircleOutlined,
     path: "/billing",
     group: "物业服务",
-    description: "物业费、能耗费与其他账单的收取入口。账单数据为空。",
+    description: "物业费、能耗费与停车费账单。可查看明细、开立账单并登记收款。",
     highlights: ["待缴账单", "已收费用", "催缴记录", "票据占位"],
   },
   {
@@ -151,7 +151,7 @@ export const menuTree: MenuNode[] = [
         title: "用户管理",
         path: "/system/users",
         group: "系统设置",
-        description: "运营账号与组织归属。登录鉴权不在本次原型范围内。",
+        description: "运营账号与组织归属。当前登录使用演示账号，用户台账仍是占位。",
         highlights: ["账号列表", "所属组织", "启用状态", "最近登录"],
       },
       {

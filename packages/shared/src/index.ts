@@ -8,3 +8,7 @@ export const site = {
 } as const;
 
 export type Site = typeof site;
+
+export { demoAccounts, loginWithDemo, readSession, writeSession, clearSession, SESSION_KEY } from "./auth";
+export type { DemoAccount, SessionUser, LoginResult } from "./auth";
+export { shanghaiNow, shanghaiToday } from "./time";

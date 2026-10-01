@@ -5,9 +5,13 @@ export const adminTheme: ThemeConfig = {
     colorPrimary: "#1d6dff",
     colorInfo: "#1d6dff",
     colorLink: "#1d6dff",
+    colorSuccess: "#12b886",
+    colorWarning: "#f5a524",
+    colorError: "#f43f5e",
     borderRadius: 10,
     fontFamily:
       '"PingFang SC", "Noto Sans SC", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif',
-    colorBgLayout: "#f3f6fb",
+    colorBgLayout: "#eef3fb",
+    controlHeight: 36,
   },
 };

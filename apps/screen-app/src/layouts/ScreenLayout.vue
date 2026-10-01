@@ -1,12 +1,36 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted } from "vue";
+import { onMounted, onUnmounted, ref } from "vue";
 import { RouterLink } from "vue-router";
-import { site } from "@park/shared";
+import { message } from "ant-design-vue";
+import { clearSession, demoAccounts, loginWithDemo, readSession, site, type SessionUser } from "@park/shared";
 import { scenes } from "@/scenes";
 import { useScreenStore } from "@/stores/screen";
 
 const screen = useScreenStore();
+const session = ref<SessionUser | null>(readSession());
+const unlockOpen = ref(false);
 let timer = 0;
+
+function refreshSession() {
+  session.value = readSession();
+}
+
+function enter(username: string, password: string) {
+  const result = loginWithDemo(username, password);
+  if (!result.ok) {
+    message.warning(result.message);
+    return;
+  }
+  refreshSession();
+  unlockOpen.value = false;
+  message.success(`已解锁，${result.user.displayName}`);
+}
+
+function leave() {
+  clearSession();
+  refreshSession();
+  message.success("已退出演示会话，大屏仍可浏览");
+}
 
 onMounted(() => {
   timer = window.setInterval(() => screen.tick(), 1000);
@@ -40,6 +64,9 @@ onUnmounted(() => {
       <div class="clock">
         <span>系统时间</span>
         <strong>{{ screen.clock }}</strong>
+        <button type="button" class="unlock" @click="unlockOpen = true">
+          {{ session ? `${session.displayName} · ${session.roleName}` : "开放浏览 · 演示解锁" }}
+        </button>
       </div>
     </header>
 
@@ -49,9 +76,28 @@ onUnmounted(() => {
 
     <footer class="status">
       <span class="pulse"></span>
-      数据通道未接入 · 场景壳已就绪 · 静态原型
+      大屏默认可浏览 · 演示解锁与管理端同域共享会话
     </footer>
   </div>
+
+  <a-modal v-model:open="unlockOpen" title="演示解锁" :footer="null" width="460px">
+    <p class="unlock-copy">大屏不拦截浏览。解锁后写入与管理端相同的本地会话；同域打开后台时无需再次登录。</p>
+    <div class="unlock-list">
+      <button
+        v-for="account in demoAccounts"
+        :key="account.username"
+        type="button"
+        @click="enter(account.username, account.password)"
+      >
+        <strong>{{ account.displayName }}</strong>
+        <span>{{ account.username }} / {{ account.password }} · {{ account.roleName }}</span>
+      </button>
+    </div>
+    <div class="unlock-actions">
+      <a-button v-if="session" danger @click="leave">退出会话</a-button>
+      <a-button type="primary" @click="unlockOpen = false">继续开放浏览</a-button>
+    </div>
+  </a-modal>
 </template>
 
 <style scoped>
@@ -176,6 +222,48 @@ h1 {
 .clock strong {
   font-variant-numeric: tabular-nums;
   font-size: 16px;
+}
+.unlock {
+  margin-top: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(103, 232, 249, 0.35);
+  background: rgba(8, 16, 32, 0.45);
+  color: #e0f2fe;
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+}
+.unlock-copy {
+  margin-top: 0;
+  color: rgba(15, 23, 42, 0.68);
+}
+.unlock-list {
+  display: grid;
+  gap: 8px;
+}
+.unlock-list button {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(34, 211, 238, 0.35);
+  background: #f8fbff;
+  cursor: pointer;
+  text-align: left;
+}
+.unlock-list span {
+  color: rgba(15, 23, 42, 0.55);
+  font-size: 12px;
+}
+.unlock-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 16px;
 }
 .stage {
   margin-top: 16px;
