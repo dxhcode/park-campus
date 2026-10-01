@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, h, ref, watch } from "vue";
+import { computed, h, onMounted, onUnmounted, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { message, type MenuProps } from "ant-design-vue";
 import { BellOutlined, LogoutOutlined, MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons-vue";
@@ -13,6 +13,13 @@ const router = useRouter();
 const app = useAppStore();
 const session = useSessionStore();
 const openKeys = ref<string[]>([]);
+const narrow = ref(false);
+
+function syncNarrow() {
+  const next = window.innerWidth < 992;
+  if (next && !narrow.value) app.collapsed = true;
+  narrow.value = next;
+}
 const screenHref = import.meta.env.DEV ? "http://localhost:5174/overview" : "/park-campus/screen/";
 
 function owningLeaf(path: string) {
@@ -64,6 +71,22 @@ function logout() {
 }
 
 watch(() => route.path, syncOpenKeys, { immediate: true });
+watch(
+  () => route.path,
+  () => {
+    if (narrow.value) app.collapsed = true;
+  },
+);
+
+onMounted(() => {
+  narrow.value = window.innerWidth < 992;
+  if (narrow.value) app.collapsed = true;
+  window.addEventListener("resize", syncNarrow);
+});
+
+onUnmounted(() => {
+  window.removeEventListener("resize", syncNarrow);
+});
 
 function onMenuClick(info: { key: string | number }) {
   const hit = leafMenus().find((item) => item.key === String(info.key));
@@ -74,13 +97,21 @@ function onMenuClick(info: { key: string | number }) {
 <template>
   <a-layout class="admin-shell">
     <div class="ambient" aria-hidden="true"></div>
+    <button
+      v-if="narrow && !app.collapsed"
+      type="button"
+      class="backdrop"
+      aria-label="关闭菜单"
+      @click="app.collapsed = true"
+    ></button>
     <a-layout-sider
       class="sider"
+      :class="{ 'is-narrow': narrow }"
       :collapsed="app.collapsed"
       :trigger="null"
       collapsible
       width="248"
-      :collapsed-width="80"
+      :collapsed-width="narrow ? 0 : 80"
       theme="dark"
     >
       <div class="brand" :class="{ 'is-collapsed': app.collapsed }">
@@ -119,7 +150,7 @@ function onMenuClick(info: { key: string | number }) {
           </div>
         </div>
         <div class="header-right">
-          <a :href="screenHref" class="screen-link">态势大屏</a>
+          <a :href="screenHref" class="screen-link" target="_blank" rel="noreferrer">态势大屏</a>
           <a-popover placement="bottomRight" title="待关注">
             <template #content>
               <div class="notice">
@@ -133,7 +164,7 @@ function onMenuClick(info: { key: string | number }) {
               </a-button>
             </a-badge>
           </a-popover>
-          <a-dropdown placement="bottomRight">
+          <a-dropdown placement="bottomRight" :trigger="['click']">
             <button type="button" class="user">
               <a-avatar :size="32">{{ session.user?.avatarText ?? "园" }}</a-avatar>
               <div>
@@ -166,6 +197,14 @@ function onMenuClick(info: { key: string | number }) {
 .admin-shell {
   min-height: 100vh;
   background: transparent;
+  overflow-x: clip;
+}
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  border: 0;
+  background: rgba(7, 17, 31, 0.45);
 }
 .ambient {
   position: fixed;
@@ -336,6 +375,16 @@ function onMenuClick(info: { key: string | number }) {
 }
 .content {
   padding: 20px;
+}
+@media (max-width: 991px) {
+  .sider.is-narrow {
+    position: fixed !important;
+    z-index: 30;
+    left: 0;
+  }
+  .screen-link {
+    display: none;
+  }
 }
 @media (max-width: 720px) {
   .user span,

@@ -236,7 +236,7 @@ h1 {
 }
 .unlock-copy {
   margin-top: 0;
-  color: rgba(15, 23, 42, 0.68);
+  color: rgba(226, 232, 240, 0.82);
 }
 .unlock-list {
   display: grid;
@@ -250,13 +250,14 @@ h1 {
   width: 100%;
   padding: 10px 12px;
   border-radius: 12px;
-  border: 1px solid rgba(34, 211, 238, 0.35);
-  background: #f8fbff;
+  border: 1px solid rgba(103, 232, 249, 0.35);
+  background: rgba(8, 16, 32, 0.72);
+  color: #e8f1ff;
   cursor: pointer;
   text-align: left;
 }
 .unlock-list span {
-  color: rgba(15, 23, 42, 0.55);
+  color: rgba(186, 230, 253, 0.72);
   font-size: 12px;
 }
 .unlock-actions {
