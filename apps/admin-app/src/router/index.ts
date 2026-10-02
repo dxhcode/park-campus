@@ -1,9 +1,14 @@
 import { createRouter, createWebHistory } from "vue-router";
 import { readSession } from "@park/shared";
+import { resources } from "@/catalog/resources";
+import type { ResourceDef } from "@/catalog/types";
 import AdminLayout from "@/layouts/AdminLayout.vue";
-import { leafMenus } from "@/menus";
+import DashboardPage from "@/views/DashboardPage.vue";
 import LoginPage from "@/views/LoginPage.vue";
 import PlaceholderPage from "@/views/PlaceholderPage.vue";
+import ResourceDetail from "@/views/catalog/ResourceDetail.vue";
+import ResourceForm from "@/views/catalog/ResourceForm.vue";
+import ResourceList from "@/views/catalog/ResourceList.vue";
 import BillDetail from "@/views/billing/BillDetail.vue";
 import BillForm from "@/views/billing/BillForm.vue";
 import BillList from "@/views/billing/BillList.vue";
@@ -11,19 +16,40 @@ import WorkorderDetail from "@/views/workorders/WorkorderDetail.vue";
 import WorkorderForm from "@/views/workorders/WorkorderForm.vue";
 import WorkorderList from "@/views/workorders/WorkorderList.vue";
 
-const placeholderRoutes = leafMenus()
-  .filter((item) => item.key !== "workorders" && item.key !== "billing")
-  .map((item) => ({
-    path: item.path!.replace(/^\//, ""),
-    name: item.key,
-    component: PlaceholderPage,
-    meta: {
-      title: item.title,
-      description: item.description ?? "",
-      group: item.group ?? "园区运营",
-      highlights: item.highlights ?? [],
+function trail(def: ResourceDef, leaf?: string) {
+  const base = def.group === def.title ? [def.title] : [def.group, def.title];
+  return leaf ? [...base, leaf] : base;
+}
+
+const catalogRoutes = resources.flatMap((def) => {
+  const base = def.path.replace(/^\//, "");
+  return [
+    {
+      path: base,
+      name: def.key,
+      component: ResourceList,
+      meta: { title: def.title, resource: def.key, mode: "list" as const, crumbs: trail(def) },
     },
-  }));
+    {
+      path: `${base}/new`,
+      name: `${def.key}-create`,
+      component: ResourceForm,
+      meta: { title: def.createLabel, resource: def.key, mode: "create" as const, crumbs: trail(def, "新建") },
+    },
+    {
+      path: `${base}/:id/edit`,
+      name: `${def.key}-edit`,
+      component: ResourceForm,
+      meta: { title: `编辑${def.noun}`, resource: def.key, mode: "edit" as const, crumbs: trail(def, "编辑") },
+    },
+    {
+      path: `${base}/:id`,
+      name: `${def.key}-detail`,
+      component: ResourceDetail,
+      meta: { title: `${def.noun}详情`, resource: def.key, mode: "detail" as const, crumbs: trail(def, "详情") },
+    },
+  ];
+});
 
 export const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -39,6 +65,12 @@ export const router = createRouter({
       component: AdminLayout,
       redirect: "/dashboard",
       children: [
+        {
+          path: "dashboard",
+          name: "dashboard",
+          component: DashboardPage,
+          meta: { title: "工作台", crumbs: ["工作台"] },
+        },
         {
           path: "workorders",
           name: "workorders",
@@ -87,7 +119,7 @@ export const router = createRouter({
           component: BillDetail,
           meta: { title: "账单详情", crumbs: ["物业缴费", "详情"] },
         },
-        ...placeholderRoutes,
+        ...catalogRoutes,
         {
           path: ":pathMatch(.*)*",
           name: "not-found",

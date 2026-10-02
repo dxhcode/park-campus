@@ -10,5 +10,7 @@ declare module "vue-router" {
     highlights?: string[];
     public?: boolean;
     crumbs?: string[];
+    resource?: string;
+    mode?: "list" | "create" | "edit" | "detail";
   }
 }

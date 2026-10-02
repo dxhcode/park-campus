@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from "vue";
+import { useRoute } from "vue-router";
 import { RouterLink } from "vue-router";
 import { message } from "ant-design-vue";
 import { clearSession, demoAccounts, loginWithDemo, readSession, site, type SessionUser } from "@park/shared";
 import { scenes } from "@/scenes";
 import { useScreenStore } from "@/stores/screen";
 
+const route = useRoute();
 const screen = useScreenStore();
 const session = ref<SessionUser | null>(readSession());
 const unlockOpen = ref(false);
@@ -71,7 +73,11 @@ onUnmounted(() => {
     </header>
 
     <main class="stage">
-      <router-view />
+      <router-view v-slot="{ Component }">
+        <transition name="scene-fade" mode="out-in">
+          <component :is="Component" :key="route.path" />
+        </transition>
+      </router-view>
     </main>
 
     <footer class="status">
@@ -202,12 +208,24 @@ h1 {
   text-decoration: none;
   border: 1px solid rgba(148, 197, 255, 0.18);
   background: rgba(255, 255, 255, 0.03);
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
 .nav a.router-link-active {
   color: #07111f;
   background: linear-gradient(90deg, #67e8f9, #e0f2fe);
   border-color: transparent;
   box-shadow: 0 0 18px rgba(103, 232, 249, 0.45);
+  animation: nav-pop 0.28s ease;
+}
+@keyframes nav-pop {
+  from {
+    transform: translateY(4px);
+    opacity: 0.55;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
 }
 .clock {
   justify-self: end;
@@ -308,8 +326,12 @@ h1 {
 @media (prefers-reduced-motion: reduce) {
   .bg-grid,
   .scan,
-  .pulse {
+  .pulse,
+  .nav a.router-link-active {
     animation: none;
+  }
+  .nav a {
+    transition: none;
   }
 }
 </style>

@@ -131,7 +131,7 @@ function onMenuClick(info: { key: string | number }) {
           @click="onMenuClick"
         />
       </div>
-      <div v-show="!app.collapsed" class="sider-foot">演示会话 · 报修与缴费已接通</div>
+      <div v-show="!app.collapsed" class="sider-foot">演示会话 · 台账保存在本机</div>
     </a-layout-sider>
 
     <a-layout class="main">
@@ -156,6 +156,8 @@ function onMenuClick(info: { key: string | number }) {
               <div class="notice">
                 <router-link to="/workorders">海纳楼客梯仍在处理，期望今日恢复</router-link>
                 <router-link to="/billing">有账单已过到期日，可去登记催缴</router-link>
+                <router-link to="/visitors">今日有访客预约待审核</router-link>
+                <router-link to="/notices">客梯检修公告仍在置顶</router-link>
               </div>
             </template>
             <a-badge dot>
@@ -187,7 +189,11 @@ function onMenuClick(info: { key: string | number }) {
         </div>
       </a-layout-header>
       <a-layout-content class="content">
-        <router-view />
+        <router-view v-slot="{ Component }">
+          <transition name="route-fade" mode="out-in">
+            <component :is="Component" :key="route.path" />
+          </transition>
+        </router-view>
       </a-layout-content>
     </a-layout>
   </a-layout>
@@ -277,8 +283,37 @@ function onMenuClick(info: { key: string | number }) {
   background: transparent;
   border-inline-end: 0 !important;
 }
+.menu-wrap :deep(.ant-menu-item),
+.menu-wrap :deep(.ant-menu-submenu-title) {
+  border-radius: 10px;
+  transition: background-color 0.22s ease, color 0.22s ease;
+}
 .menu-wrap :deep(.ant-menu-item-selected) {
-  box-shadow: inset 2px 0 0 #67e8f9, 0 0 18px rgba(103, 232, 249, 0.12);
+  background: linear-gradient(90deg, rgba(103, 232, 249, 0.22), rgba(29, 109, 255, 0.08)) !important;
+  box-shadow: 0 0 18px rgba(103, 232, 249, 0.12);
+}
+.menu-wrap :deep(.ant-menu-item-selected)::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 8px;
+  bottom: 8px;
+  width: 3px;
+  border-radius: 999px;
+  background: #67e8f9;
+  box-shadow: 0 0 10px #67e8f9;
+  transform-origin: center;
+  animation: menu-bar 0.28s ease;
+}
+@keyframes menu-bar {
+  from {
+    transform: scaleY(0.35);
+    opacity: 0;
+  }
+  to {
+    transform: scaleY(1);
+    opacity: 1;
+  }
 }
 .sider-foot {
   margin: 8px 16px 16px;
@@ -384,6 +419,15 @@ function onMenuClick(info: { key: string | number }) {
   }
   .screen-link {
     display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .menu-wrap :deep(.ant-menu-item),
+  .menu-wrap :deep(.ant-menu-submenu-title) {
+    transition: none;
+  }
+  .menu-wrap :deep(.ant-menu-item-selected)::after {
+    animation: none;
   }
 }
 @media (max-width: 720px) {

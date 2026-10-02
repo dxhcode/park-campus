@@ -4,6 +4,7 @@ import { useRouter } from "vue-router";
 import { message } from "ant-design-vue";
 import { shanghaiToday } from "@park/shared";
 import { billStatusColor, billTypes, paidOf, remainOf, statusOf, type Bill } from "@/data/bills";
+import ListEmpty from "@/components/ListEmpty.vue";
 import { useBillStore } from "@/stores/bills";
 import { formatYuan } from "@/utils/storage";
 
@@ -65,6 +66,10 @@ const columns = [
   { title: "到期", dataIndex: "dueDate", key: "dueDate", width: 120 },
   { title: "操作", key: "actions", width: 150, fixed: "right" as const },
 ];
+
+const filtersActive = computed(
+  () => Boolean(filters.keyword.trim() || filters.status || filters.type || filters.period.trim()),
+);
 
 function resetFilters() {
   filters.keyword = "";
@@ -162,7 +167,13 @@ function asRow(record: object) {
           </template>
         </template>
         <template #emptyText>
-          <a-empty description="没有符合筛选条件的账单" />
+          <ListEmpty
+            :filtered="filtersActive"
+            :description="filtersActive ? '没有符合筛选条件的账单' : '还没有账单'"
+            create-label="开立账单"
+            @clear="resetFilters"
+            @create="router.push('/billing/new')"
+          />
         </template>
       </a-table>
     </a-card>

@@ -10,6 +10,7 @@ import {
   workorderStatuses,
   type Workorder,
 } from "@/data/workorders";
+import ListEmpty from "@/components/ListEmpty.vue";
 import { useWorkorderStore } from "@/stores/workorders";
 
 const router = useRouter();
@@ -56,6 +57,10 @@ const columns = [
   { title: "报修时间", dataIndex: "createdAt", key: "createdAt", width: 150 },
   { title: "操作", key: "actions", width: 140, fixed: "right" as const },
 ];
+
+const filtersActive = computed(
+  () => Boolean(filters.keyword.trim() || filters.status || filters.priority || filters.category),
+);
 
 function resetFilters() {
   filters.keyword = "";
@@ -142,7 +147,13 @@ function asRow(record: object) {
           </template>
         </template>
         <template #emptyText>
-          <a-empty description="没有符合筛选条件的工单" />
+          <ListEmpty
+            :filtered="filtersActive"
+            :description="filtersActive ? '没有符合筛选条件的工单' : '还没有工单'"
+            create-label="新建工单"
+            @clear="resetFilters"
+            @create="router.push('/workorders/new')"
+          />
         </template>
       </a-table>
     </a-card>

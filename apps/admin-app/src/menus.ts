@@ -30,7 +30,7 @@ export const menuTree: MenuNode[] = [
     icon: DashboardOutlined,
     path: "/dashboard",
     group: "首页",
-    description: "园区运营首页。待办、快捷入口和运行摘要将在此汇集，当前仅保留页面骨架。",
+    description: "汇总待办、欠费、访客和公告，并提供各台账入口。",
     highlights: ["今日待办", "运行摘要", "快捷入口", "公告速览"],
   },
   {
@@ -43,7 +43,7 @@ export const menuTree: MenuNode[] = [
         title: "园区信息",
         path: "/park/info",
         group: "园区管理",
-        description: "维护园区名称、地址、面积与运营主体。档案表单尚未接入。",
+        description: "维护园区名称、地址、面积与运营主体。档案保存在本机。",
         highlights: ["基础档案", "区位信息", "运营主体", "证照附件"],
       },
       {
@@ -51,7 +51,7 @@ export const menuTree: MenuNode[] = [
         title: "楼宇管理",
         path: "/park/buildings",
         group: "园区管理",
-        description: "楼栋台账、层数与启用状态的管理入口。列表仍是占位骨架。",
+        description: "楼栋台账、层数、用途与启用状态。",
         highlights: ["楼栋台账", "楼层结构", "启用状态", "面积汇总"],
       },
       {
@@ -59,7 +59,7 @@ export const menuTree: MenuNode[] = [
         title: "空间房间",
         path: "/park/spaces",
         group: "园区管理",
-        description: "房间、工位与公共空间的空置和占用视图。房源数据待接入。",
+        description: "房间与公共空间的空置、出租和自用情况。",
         highlights: ["房间台账", "空置情况", "功能分区", "平面索引"],
       },
     ],
@@ -74,7 +74,7 @@ export const menuTree: MenuNode[] = [
         title: "入驻企业",
         path: "/enterprise/companies",
         group: "企业服务",
-        description: "在园企业名录、联系人与入驻状态。名录接口尚未接通。",
+        description: "在园企业名录、联系人与入驻状态。",
         highlights: ["企业名录", "联系人", "入驻状态", "所属楼宇"],
       },
       {
@@ -82,7 +82,7 @@ export const menuTree: MenuNode[] = [
         title: "合同管理",
         path: "/enterprise/contracts",
         group: "企业服务",
-        description: "租赁与服务合同的签订、到期提醒。合同文本暂不展示。",
+        description: "租赁与服务合同，可查看到期状态并维护摘要。",
         highlights: ["合同列表", "到期提醒", "签约主体", "附件占位"],
       },
     ],
@@ -111,7 +111,7 @@ export const menuTree: MenuNode[] = [
     icon: IdcardOutlined,
     path: "/visitors",
     group: "通行安防",
-    description: "访客预约、邀约与通行记录。闸机数据尚未接入。",
+    description: "访客预约、审核与到离记录。闸机仍未接入。",
     highlights: ["今日访客", "预约审核", "通行记录", "黑名单"],
   },
   {
@@ -120,7 +120,7 @@ export const menuTree: MenuNode[] = [
     icon: ThunderboltOutlined,
     path: "/energy",
     group: "运行监测",
-    description: "电、水、冷热负荷的监测看板。曲线图留到后续图表阶段。",
+    description: "电、水、冷热表计台账与最近读数。曲线图留到后续。",
     highlights: ["用电负荷", "用水量", "分项能耗", "异常波动"],
   },
   {
@@ -129,7 +129,7 @@ export const menuTree: MenuNode[] = [
     icon: VideoCameraOutlined,
     path: "/security",
     group: "通行安防",
-    description: "视频点位与告警联动的监控墙。画面流暂不播放。",
+    description: "监控与周界点位、在线状态。画面流暂不播放。",
     highlights: ["监控点位", "在线状态", "告警联动", "回放入口"],
   },
   {
@@ -138,7 +138,7 @@ export const menuTree: MenuNode[] = [
     icon: NotificationOutlined,
     path: "/notices",
     group: "园区服务",
-    description: "面向企业和物业人员的公告发布。内容列表仍是骨架。",
+    description: "面向企业和物业人员发布公告、草稿和置顶。",
     highlights: ["已发布", "草稿", "阅读范围", "置顶公告"],
   },
   {
@@ -151,7 +151,7 @@ export const menuTree: MenuNode[] = [
         title: "用户管理",
         path: "/system/users",
         group: "系统设置",
-        description: "运营账号与组织归属。当前登录使用演示账号，用户台账仍是占位。",
+        description: "运营账号与组织归属。登录仍使用演示账号，此处是本机台账。",
         highlights: ["账号列表", "所属组织", "启用状态", "最近登录"],
       },
       {
@@ -159,7 +159,7 @@ export const menuTree: MenuNode[] = [
         title: "角色管理",
         path: "/system/roles",
         group: "系统设置",
-        description: "角色与权限点配置。权限模型尚未落地。",
+        description: "角色、数据范围与权限摘要。不改变真实登录权限。",
         highlights: ["角色列表", "权限点", "数据范围", "成员数量"],
       },
       {
@@ -167,7 +167,7 @@ export const menuTree: MenuNode[] = [
         title: "菜单管理",
         path: "/system/menus",
         group: "系统设置",
-        description: "后台菜单与路由对照。当前菜单由前端静态配置。",
+        description: "后台菜单与路由对照。修改只写入本机台账，不改左侧导航。",
         highlights: ["菜单树", "路由路径", "图标", "排序"],
       },
     ],

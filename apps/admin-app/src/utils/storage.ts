@@ -1,9 +1,10 @@
-export function loadList<T>(key: string, seed: T[], guard: (value: unknown) => value is T): T[] {
+export function loadList<T>(key: string, seed: T[], guard: (value: unknown) => value is T, allowEmpty = false): T[] {
   try {
     const raw = localStorage.getItem(key);
     if (!raw) return structuredClone(seed);
     const parsed: unknown = JSON.parse(raw);
-    if (!Array.isArray(parsed) || parsed.length === 0 || !parsed.every(guard)) return structuredClone(seed);
+    if (!Array.isArray(parsed) || !parsed.every(guard)) return structuredClone(seed);
+    if (parsed.length === 0 && !allowEmpty) return structuredClone(seed);
     return parsed;
   } catch {
     return structuredClone(seed);

@@ -17,46 +17,29 @@ const panels = computed(() => route.meta.panels ?? []);
         <h2>{{ title }}</h2>
         <p>{{ description }}</p>
       </div>
-      <a-tag color="cyan">空数据壳</a-tag>
+      <a-tag color="cyan">待接入</a-tag>
     </header>
 
-    <div class="kpis">
-      <article v-for="panel in panels" :key="panel" class="glass">
-        <header>
-          <span>{{ panel }}</span>
-          <i></i>
-        </header>
-        <strong>—</strong>
-        <a-skeleton active :title="false" :paragraph="{ rows: 1, width: '60%' }" />
-      </article>
-    </div>
-
-    <div class="board">
-      <article class="glass wide">
-        <header>
-          <span>主视图占位</span>
-          <em>图表 / 地图后续接入</em>
-        </header>
-        <div class="viewport">
-          <div class="frame"></div>
-          <p>等待数据层</p>
+    <article class="soon">
+      <div class="visual" aria-hidden="true">
+        <div class="ring"></div>
+        <div class="core">待接入</div>
+      </div>
+      <div class="copy">
+        <div class="kicker">COMING SOON</div>
+        <h3>地图与图表尚未接入</h3>
+        <p>这一屏先留作场景入口。实时 KPI、地图和曲线会在后续态势里补上，现在不放空骨架。</p>
+        <div class="chips">
+          <span v-for="panel in panels" :key="panel">{{ panel }}</span>
         </div>
-      </article>
-      <article class="glass side">
-        <header>
-          <span>事件流</span>
-          <em>暂无告警</em>
-        </header>
-        <a-skeleton v-for="row in 4" :key="row" active :title="false" :paragraph="{ rows: 2 }" />
-      </article>
-    </div>
+      </div>
+    </article>
   </section>
 </template>
 
 <style scoped>
 .scene-head,
-.kpis,
-.board {
+.soon {
   position: relative;
   z-index: 1;
 }
@@ -81,83 +64,80 @@ p {
   margin: 0;
   max-width: 760px;
   color: rgba(226, 232, 240, 0.74);
+  line-height: 1.7;
 }
-.kpis {
+.soon {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 12px;
-}
-.glass {
-  padding: 14px 16px;
-  border-radius: 16px;
-  background: linear-gradient(180deg, rgba(12, 24, 44, 0.72), rgba(6, 12, 24, 0.55));
-  border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
-  box-shadow: inset 0 0 24px rgba(8, 20, 40, 0.35), 0 0 24px color-mix(in srgb, var(--accent) 18%, transparent);
-  backdrop-filter: blur(14px);
-}
-.glass header {
-  display: flex;
-  justify-content: space-between;
+  grid-template-columns: 180px minmax(0, 1fr);
+  gap: 28px;
   align-items: center;
-  color: rgba(226, 232, 240, 0.8);
-  font-size: 13px;
+  min-height: 360px;
+  padding: 36px 40px;
+  border-radius: 22px;
+  background:
+    radial-gradient(420px 180px at 0% 0%, color-mix(in srgb, var(--accent) 22%, transparent), transparent 70%),
+    linear-gradient(180deg, rgba(12, 24, 44, 0.78), rgba(6, 12, 24, 0.62));
+  border: 1px solid color-mix(in srgb, var(--accent) 48%, transparent);
+  box-shadow: inset 0 0 32px rgba(8, 20, 40, 0.35), 0 0 28px color-mix(in srgb, var(--accent) 16%, transparent);
+  backdrop-filter: blur(16px);
 }
-.glass header i {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--accent);
-  box-shadow: 0 0 10px var(--accent);
-}
-.glass strong {
-  display: block;
-  margin: 8px 0 4px;
-  font-size: 28px;
-  color: white;
-}
-.glass header em {
-  color: rgba(186, 230, 253, 0.62);
-  font-style: normal;
-  font-size: 12px;
-}
-.board {
-  display: grid;
-  grid-template-columns: minmax(0, 1.7fr) minmax(260px, 0.8fr);
-  gap: 12px;
-  margin-top: 12px;
-}
-.viewport {
+.visual {
   position: relative;
   display: grid;
   place-items: center;
-  min-height: 280px;
-  margin-top: 12px;
-  border-radius: 12px;
-  overflow: hidden;
-  background:
-    linear-gradient(rgba(103, 232, 249, 0.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(103, 232, 249, 0.08) 1px, transparent 1px),
-    rgba(2, 8, 20, 0.45);
-  background-size: 32px 32px, 32px 32px, auto;
+  width: 168px;
+  height: 168px;
 }
-.frame {
+.ring {
   position: absolute;
-  inset: 18px;
-  border: 1px dashed color-mix(in srgb, var(--accent) 70%, white);
-  border-radius: 12px;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px dashed color-mix(in srgb, var(--accent) 75%, white);
+  box-shadow: 0 0 28px color-mix(in srgb, var(--accent) 35%, transparent), inset 0 0 24px color-mix(in srgb, var(--accent) 18%, transparent);
+  animation: spin 18s linear infinite;
 }
-.viewport p {
+.core {
   position: relative;
-  letter-spacing: 0.24em;
+  letter-spacing: 0.28em;
   color: var(--accent);
+  font-size: 13px;
 }
-.side :deep(.ant-skeleton) {
-  margin-top: 14px;
+h3 {
+  margin: 8px 0 10px;
+  font-size: 28px;
 }
-@media (max-width: 1100px) {
-  .kpis,
-  .board {
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 18px;
+}
+.chips span {
+  padding: 6px 12px;
+  border-radius: 999px;
+  color: rgba(224, 242, 254, 0.9);
+  font-size: 13px;
+  border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+  background: rgba(8, 16, 32, 0.45);
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (max-width: 800px) {
+  .soon {
     grid-template-columns: 1fr;
+    padding: 24px;
+  }
+  h2,
+  h3 {
+    font-size: 24px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ring {
+    animation: none;
   }
 }
 </style>
