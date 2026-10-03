@@ -2,15 +2,19 @@
 import { computed, reactive } from "vue";
 import { useRouter } from "vue-router";
 import { message } from "ant-design-vue";
-import { shanghaiToday } from "@park/shared";
+import { parkByKey, screenHref, shanghaiToday } from "@park/shared";
 import { billStatusColor, billTypes, paidOf, remainOf, statusOf, type Bill } from "@/data/bills";
 import ListEmpty from "@/components/ListEmpty.vue";
+import { useAppStore } from "@/stores/app";
 import { useBillStore } from "@/stores/bills";
 import { formatYuan } from "@/utils/storage";
 
 const router = useRouter();
+const app = useAppStore();
 const store = useBillStore();
 const today = shanghaiToday();
+const screenLink = computed(() => screenHref("/overview", { from: "/billing", park: app.parkKey }));
+const screenLabel = computed(() => `收费态势 · ${parkByKey(app.parkKey).short}`);
 
 const filters = reactive({
   keyword: "",
@@ -109,6 +113,7 @@ function asRow(record: object) {
         <p>查看临港智慧园区的物业费、能耗和停车账单。可以开立新账单，也可以对未结清账单登记收款。</p>
       </div>
       <a-space wrap>
+        <a-button :href="screenLink">{{ screenLabel }}</a-button>
         <a-popconfirm title="清除本地改动，恢复示例账单？" ok-text="恢复" cancel-text="取消" @confirm="resetData">
           <a-button>恢复示例</a-button>
         </a-popconfirm>

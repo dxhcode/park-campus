@@ -2,18 +2,30 @@
 import { computed, reactive } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { message } from "ant-design-vue";
+import { parkByKey, screenHref } from "@park/shared";
 import ListEmpty from "@/components/ListEmpty.vue";
 import { showValue, tagColor } from "@/catalog/present";
 import { resourceByKey } from "@/catalog/resources";
 import type { CatalogRecord, FieldDef } from "@/catalog/types";
 import { leafMenus } from "@/menus";
+import { useAppStore } from "@/stores/app";
 import { useCatalogStore } from "@/stores/catalog";
 
 const route = useRoute();
 const router = useRouter();
+const app = useAppStore();
 const store = useCatalogStore();
 
 const def = computed(() => resourceByKey(String(route.meta.resource ?? "")));
+const screenJump = computed(() => {
+  const key = def.value?.key;
+  const park = app.parkKey;
+  const short = parkByKey(park).short;
+  if (key === "energy") return { label: `能耗大屏 · ${short}`, href: screenHref("/energy", { from: "/energy", park }) };
+  if (key === "security") return { label: `通行安防 · ${short}`, href: screenHref("/access", { from: "/security", park }) };
+  if (key === "visitors") return { label: `通行大屏 · ${short}`, href: screenHref("/access", { from: "/visitors", park }) };
+  return null;
+});
 const highlights = computed(() => leafMenus().find((item) => item.key === def.value?.key)?.highlights ?? []);
 const items = computed(() => (def.value ? (store.bags[def.value.key] ?? []) : []));
 const filterFields = computed(() => def.value?.fields.filter((field) => field.filter) ?? []);
@@ -132,6 +144,7 @@ function resetData() {
         <p>{{ def.description }}</p>
       </div>
       <a-space wrap>
+        <a-button v-if="screenJump" :href="screenJump.href">{{ screenJump.label }}</a-button>
         <a-popconfirm :title="`清除本地改动，恢复${def.noun}示例数据？`" ok-text="恢复" cancel-text="取消" @confirm="resetData">
           <a-button>恢复示例</a-button>
         </a-popconfirm>

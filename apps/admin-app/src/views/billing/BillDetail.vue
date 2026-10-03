@@ -1,13 +1,17 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import { screenHref } from "@park/shared";
 import { billStatusColor, paidOf, remainOf, statusOf } from "@/data/bills";
+import { useAppStore } from "@/stores/app";
 import { useBillStore } from "@/stores/bills";
 import { formatYuan } from "@/utils/storage";
 
 const route = useRoute();
 const router = useRouter();
+const app = useAppStore();
 const store = useBillStore();
+const screenLink = computed(() => screenHref("/overview", { from: route.path, park: app.parkKey }));
 
 const item = computed(() => store.byId(String(route.params.id)));
 const paid = computed(() => (item.value ? paidOf(item.value) : 0));
@@ -32,6 +36,7 @@ const status = computed(() => (item.value ? statusOf(item.value) : "待缴费"))
         </div>
         <a-space wrap>
           <a-tag :color="billStatusColor(status)">{{ status }}</a-tag>
+          <a-button :href="screenLink">收费态势</a-button>
           <a-button @click="router.push('/billing')">返回列表</a-button>
           <a-button v-if="status !== '已缴清'" type="primary" @click="router.push(`/billing/${item.id}/pay`)">登记收款</a-button>
         </a-space>

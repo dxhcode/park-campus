@@ -2,13 +2,17 @@
 import { computed, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { message } from "ant-design-vue";
+import { screenHref } from "@park/shared";
 import { assigneeOptions, priorityColor, statusColor, type WorkorderStatus } from "@/data/workorders";
+import { useAppStore } from "@/stores/app";
 import { useSessionStore } from "@/stores/session";
 import { useWorkorderStore } from "@/stores/workorders";
 
 const route = useRoute();
 const router = useRouter();
+const app = useAppStore();
 const store = useWorkorderStore();
+const screenLink = computed(() => screenHref("/workorders", { from: route.path, park: app.parkKey }));
 const session = useSessionStore();
 
 const item = computed(() => store.byId(String(route.params.id)));
@@ -53,6 +57,7 @@ function confirmDispatch() {
         <a-space wrap>
           <a-tag :color="priorityColor(item.priority)">{{ item.priority }}</a-tag>
           <a-tag :color="statusColor(item.status)">{{ item.status }}</a-tag>
+          <a-button :href="screenLink">工单大屏</a-button>
           <a-button @click="router.push('/workorders')">返回列表</a-button>
           <a-button @click="router.push(`/workorders/${item.id}/edit`)">编辑</a-button>
           <a-button v-if="item.status === '待受理'" type="primary" @click="dispatchOpen = true">受理并派单</a-button>

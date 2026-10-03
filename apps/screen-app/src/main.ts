@@ -5,6 +5,7 @@ import "ant-design-vue/dist/reset.css";
 import App from "./App.vue";
 import { router } from "./router";
 import "./styles/screen.css";
+import "./styles/cockpit.css";
 
 const app = createApp(App);
 app.use(createPinia());

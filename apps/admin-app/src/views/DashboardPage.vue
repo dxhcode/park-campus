@@ -1,17 +1,40 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import { RouterLink } from "vue-router";
-import { shanghaiToday } from "@park/shared";
+import { parkByKey, parks, screenHref, shanghaiToday, type ParkKey } from "@park/shared";
 import { remainOf, statusOf } from "@/data/bills";
 import { resourceByKey } from "@/catalog/resources";
 import { useBillStore } from "@/stores/bills";
 import { useCatalogStore } from "@/stores/catalog";
+import { useAppStore } from "@/stores/app";
 import { useSessionStore } from "@/stores/session";
 import { useWorkorderStore } from "@/stores/workorders";
 import { formatYuan } from "@/utils/storage";
 
 const today = shanghaiToday();
+const app = useAppStore();
 const session = useSessionStore();
+const parkKey = ref<ParkKey>(app.parkKey);
+const currentPark = computed(() => parkByKey(parkKey.value));
+const sceneHops = [
+  { title: "综合态势", path: "/overview", desc: "地图、收费与通行" },
+  { title: "物业运行", path: "/property", desc: "班组与设施" },
+  { title: "工单态势", path: "/workorders", desc: "滚动工单墙" },
+  { title: "能耗监测", path: "/energy", desc: "水电曲线" },
+  { title: "通行安防", path: "/access", desc: "人车与访客" },
+  { title: "告警中心", path: "/alerts", desc: "等级与告警墙" },
+];
+const hops = computed(() =>
+  sceneHops.map((item) => ({
+    ...item,
+    href: screenHref(item.path, { from: "/dashboard", park: parkKey.value }),
+  })),
+);
+
+function choosePark(key: ParkKey) {
+  parkKey.value = key;
+  app.setPark(key);
+}
 const catalog = useCatalogStore();
 const workorders = useWorkorderStore();
 const bills = useBillStore();
@@ -76,6 +99,32 @@ const kpis = computed(() => [
         <strong :class="item.tone">{{ item.value }}</strong>
       </RouterLink>
     </div>
+
+    <section class="hop">
+      <div class="hop-copy">
+        <div class="eyebrow">态势跳转</div>
+        <h2>{{ currentPark.name }}</h2>
+        <p>选择滨江云栖、临港智造或光谷生命科学园，进入对应驾驶舱。大屏右上角可以回到工作台。</p>
+      </div>
+      <div class="park-picks">
+        <button
+          v-for="park in parks"
+          :key="park.key"
+          type="button"
+          :class="{ on: park.key === parkKey }"
+          @click="choosePark(park.key)"
+        >
+          <strong>{{ park.short }}</strong>
+          <span>{{ park.name }}</span>
+        </button>
+      </div>
+      <div class="hop-links">
+        <a v-for="item in hops" :key="item.path" :href="item.href">
+          <strong>{{ item.title }}</strong>
+          <span>{{ item.desc }}</span>
+        </a>
+      </div>
+    </section>
 
     <div class="shortcuts">
       <RouterLink v-for="item in shortcuts" :key="item.path" class="shortcut" :to="item.path">
@@ -172,6 +221,50 @@ const kpis = computed(() => [
   transform: translateY(-2px);
   box-shadow: 0 12px 28px rgba(29, 109, 255, 0.12);
 }
+.hop {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 18px;
+  background:
+    radial-gradient(420px 120px at 100% 0%, rgba(103, 232, 249, 0.2), transparent 70%),
+    linear-gradient(180deg, #ffffff, #f4f8ff);
+  border: 1px solid rgba(29, 109, 255, 0.12);
+}
+.hop h2 { margin: 4px 0; font-size: 20px; }
+.hop p { margin: 0; color: rgba(15, 23, 42, 0.62); }
+.park-picks,
+.hop-links {
+  display: grid;
+  gap: 10px;
+}
+.park-picks { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.hop-links { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+.park-picks button,
+.hop-links a {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  align-items: flex-start;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(29, 109, 255, 0.12);
+  background: white;
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+}
+.park-picks button.on {
+  border-color: transparent;
+  color: #07111f;
+  background: linear-gradient(135deg, #67e8f9, #f5c16c);
+}
+.hop-links span,
+.park-picks span { color: rgba(15, 23, 42, 0.55); font-size: 12px; }
+.park-picks button.on span { color: rgba(7, 17, 31, 0.72); }
 .shortcuts {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -213,7 +306,9 @@ const kpis = computed(() => [
   color: #1d6dff;
 }
 @media (max-width: 960px) {
-  .shortcuts {
+  .shortcuts,
+  .hop-links,
+  .park-picks {
     grid-template-columns: 1fr 1fr;
   }
 }

@@ -12,3 +12,17 @@ export type Site = typeof site;
 export { demoAccounts, loginWithDemo, readSession, writeSession, clearSession, SESSION_KEY } from "./auth";
 export type { DemoAccount, SessionUser, LoginResult } from "./auth";
 export { shanghaiNow, shanghaiToday } from "./time";
+export {
+  parks,
+  PARK_STORAGE_KEY,
+  sceneAdminFallback,
+  isParkKey,
+  parkByKey,
+  readPark,
+  writePark,
+  screenHref,
+  adminHref,
+  safeAdminPath,
+  adminFromLabel,
+} from "./hops";
+export type { ParkKey } from "./hops";

@@ -1,17 +1,54 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from "vue";
-import { useRoute } from "vue-router";
+import { computed, onMounted, onUnmounted, ref, watch } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import { RouterLink } from "vue-router";
 import { message } from "ant-design-vue";
-import { clearSession, demoAccounts, loginWithDemo, readSession, site, type SessionUser } from "@park/shared";
+import {
+  adminFromLabel,
+  adminHref,
+  clearSession,
+  demoAccounts,
+  isParkKey,
+  loginWithDemo,
+  parks,
+  readSession,
+  safeAdminPath,
+  sceneAdminFallback,
+  site,
+  type ParkKey,
+  type SessionUser,
+} from "@park/shared";
+import KpiTicker from "@/components/KpiTicker.vue";
+import { cockpitOf } from "@/data/parks";
 import { scenes } from "@/scenes";
 import { useScreenStore } from "@/stores/screen";
 
 const route = useRoute();
+const router = useRouter();
 const screen = useScreenStore();
 const session = ref<SessionUser | null>(readSession());
 const unlockOpen = ref(false);
+const park = computed(() => cockpitOf(screen.parkKey));
+const fromLabel = computed(() => adminFromLabel(route.query.from));
+const backHref = computed(() => {
+  const sceneName = typeof route.name === "string" ? route.name : "overview";
+  const fallback = sceneAdminFallback[sceneName] ?? "/dashboard";
+  return adminHref(safeAdminPath(route.query.from, fallback), { park: screen.parkKey });
+});
 let timer = 0;
+
+function syncPark() {
+  const raw = route.query.park;
+  const value = Array.isArray(raw) ? raw[0] : raw;
+  if (typeof value === "string" && isParkKey(value) && value !== screen.parkKey) screen.setPark(value);
+}
+
+function pickPark(key: ParkKey) {
+  screen.setPark(key);
+  router.replace({ query: { ...route.query, park: key } });
+}
+
+watch(() => route.query.park, syncPark, { immediate: true });
 
 function refreshSession() {
   session.value = readSession();
@@ -54,12 +91,24 @@ onUnmounted(() => {
       <div class="identity">
         <div class="mark">园</div>
         <div>
-          <div class="badge">{{ site.badge }} · {{ screen.campusName }}</div>
+          <div class="badge">{{ site.badge }} · {{ park.name }}</div>
           <h1>{{ site.name }} · {{ site.screenName }}</h1>
+          <div class="park-switch" role="group" aria-label="切换园区">
+            <button
+              v-for="item in parks"
+              :key="item.key"
+              type="button"
+              :class="{ on: item.key === screen.parkKey }"
+              :title="item.name"
+              @click="pickPark(item.key)"
+            >
+              {{ item.short }}
+            </button>
+          </div>
         </div>
       </div>
       <nav class="nav" aria-label="场景切换">
-        <RouterLink v-for="scene in scenes" :key="scene.key" :to="scene.path">
+        <RouterLink v-for="scene in scenes" :key="scene.key" :to="{ path: scene.path, query: route.query }">
           {{ scene.title }}
         </RouterLink>
       </nav>
@@ -69,8 +118,15 @@ onUnmounted(() => {
         <button type="button" class="unlock" @click="unlockOpen = true">
           {{ session ? `${session.displayName} · ${session.roleName}` : "开放浏览 · 演示解锁" }}
         </button>
+        <a class="back-link" :href="backHref">返回管理端</a>
       </div>
     </header>
+
+    <KpiTicker :park="park" :second="screen.now.getSeconds()" />
+    <div v-if="fromLabel" class="hop-ribbon">
+      <span>演示跳转 · 来自{{ fromLabel }}</span>
+      <a :href="backHref">回到{{ fromLabel }}</a>
+    </div>
 
     <main class="stage">
       <router-view v-slot="{ Component }">
@@ -82,7 +138,7 @@ onUnmounted(() => {
 
     <footer class="status">
       <span class="pulse"></span>
-      大屏默认可浏览 · 演示解锁与管理端同域共享会话
+      {{ park.city }} · {{ park.hotline }} · 演示数据可从管理端跳入
     </footer>
   </div>
 

@@ -3,7 +3,7 @@ import { computed, h, onMounted, onUnmounted, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { message, type MenuProps } from "ant-design-vue";
 import { BellOutlined, LogoutOutlined, MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons-vue";
-import { site } from "@park/shared";
+import { isParkKey, screenHref, site } from "@park/shared";
 import { leafMenus, menuTree, type MenuNode } from "@/menus";
 import { useAppStore } from "@/stores/app";
 import { useSessionStore } from "@/stores/session";
@@ -20,7 +20,16 @@ function syncNarrow() {
   if (next && !narrow.value) app.collapsed = true;
   narrow.value = next;
 }
-const screenHref = import.meta.env.DEV ? "http://localhost:5174/overview" : "/park-campus/screen/";
+const screenLink = computed(() => screenHref("/overview", { from: route.path || "/dashboard", park: app.parkKey }));
+
+watch(
+  () => route.query.park,
+  (value) => {
+    const raw = Array.isArray(value) ? value[0] : value;
+    if (typeof raw === "string" && isParkKey(raw)) app.setPark(raw);
+  },
+  { immediate: true },
+);
 
 function owningLeaf(path: string) {
   return leafMenus()
@@ -150,7 +159,7 @@ function onMenuClick(info: { key: string | number }) {
           </div>
         </div>
         <div class="header-right">
-          <a :href="screenHref" class="screen-link" target="_blank" rel="noreferrer">态势大屏</a>
+          <a :href="screenLink" class="screen-link">态势大屏</a>
           <a-popover placement="bottomRight" title="待关注">
             <template #content>
               <div class="notice">

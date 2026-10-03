@@ -2,6 +2,7 @@
 import { computed, reactive } from "vue";
 import { useRouter } from "vue-router";
 import { message } from "ant-design-vue";
+import { parkByKey, screenHref } from "@park/shared";
 import {
   priorityColor,
   statusColor,
@@ -11,10 +12,14 @@ import {
   type Workorder,
 } from "@/data/workorders";
 import ListEmpty from "@/components/ListEmpty.vue";
+import { useAppStore } from "@/stores/app";
 import { useWorkorderStore } from "@/stores/workorders";
 
 const router = useRouter();
+const app = useAppStore();
 const store = useWorkorderStore();
+const screenLink = computed(() => screenHref("/workorders", { from: "/workorders", park: app.parkKey }));
+const screenLabel = computed(() => `工单大屏 · ${parkByKey(app.parkKey).short}`);
 
 const filters = reactive({
   keyword: "",
@@ -99,6 +104,7 @@ function asRow(record: object) {
         <p>受理、派单、验收和完工都在浏览器里走通。改动写入本机，刷新后还在。</p>
       </div>
       <a-space wrap>
+        <a-button :href="screenLink">{{ screenLabel }}</a-button>
         <a-popconfirm title="清除本地改动，恢复 12 条示例工单？" ok-text="恢复" cancel-text="取消" @confirm="resetData">
           <a-button>恢复示例</a-button>
         </a-popconfirm>

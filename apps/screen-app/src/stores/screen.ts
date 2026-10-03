@@ -1,10 +1,10 @@
 import { defineStore } from "pinia";
-import { site } from "@park/shared";
+import { readPark, writePark, type ParkKey } from "@park/shared";
 
 export const useScreenStore = defineStore("screen", {
   state: () => ({
     now: new Date(),
-    campusName: site.campusName,
+    parkKey: readPark(),
   }),
   getters: {
     clock(state): string {
@@ -22,6 +22,10 @@ export const useScreenStore = defineStore("screen", {
   actions: {
     tick() {
       this.now = new Date();
+    },
+    setPark(key: ParkKey) {
+      this.parkKey = key;
+      writePark(key);
     },
   },
 });
