@@ -1,0 +1,19 @@
+{
+  "name": "park-campus",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "packageManager": "pnpm@10.33.3",
+  "engines": {
+    "node": ">=20"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": ["esbuild"]
+  },
+  "scripts": {
+    "dev": "pnpm --parallel --filter @park/admin-app --filter @park/screen-app dev",
+    "build": "pnpm --filter @park/admin-app --filter @park/screen-app build",
+    "typecheck": "pnpm --filter @park/admin-app --filter @park/screen-app typecheck",
+    "pages:build": "node scripts/pages-build.mjs"
+  }
+}

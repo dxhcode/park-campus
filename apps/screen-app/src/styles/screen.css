@@ -1,0 +1,37 @@
+html,
+body,
+#app {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  font-family: "PingFang SC", "Noto Sans SC", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
+  color: #e8f1ff;
+  background: #050814;
+}
+
+#app {
+  min-height: 100vh;
+}
+
+.scene-fade-enter-active,
+.scene-fade-leave-active {
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.scene-fade-enter-from,
+.scene-fade-leave-to {
+  opacity: 0;
+  transform: translateY(8px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .scene-fade-enter-active,
+  .scene-fade-leave-active {
+    transition: none;
+  }
+}
+
+.ant-skeleton-content .ant-skeleton-paragraph > li,
+.ant-skeleton-title {
+  background: linear-gradient(90deg, rgba(148, 197, 255, 0.08) 25%, rgba(103, 232, 249, 0.22) 37%, rgba(148, 197, 255, 0.08) 63%) !important;
+}
