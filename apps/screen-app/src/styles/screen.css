@@ -1,3 +1,17 @@
+:root {
+  --park-ink: #07111f;
+  --park-blue: #1d6dff;
+  --park-cyan: #67e8f9;
+  --park-gold: #f5c16c;
+  --park-green: #34d399;
+  --park-violet: #a78bfa;
+  --park-rose: #fb7185;
+  --park-sky: #38bdf8;
+  --park-text: #e8f1ff;
+  --park-gap: 16px;
+  --park-radius: 16px;
+}
+
 html,
 body,
 #app {
@@ -7,7 +21,7 @@ body,
 
 body {
   font-family: "PingFang SC", "Noto Sans SC", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
-  color: #e8f1ff;
+  color: var(--park-text);
   background: #050814;
 }
 

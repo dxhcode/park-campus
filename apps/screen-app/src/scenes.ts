@@ -1,3 +1,5 @@
+import { palette } from "@park/shared";
+
 export interface Scene {
   key: string;
   title: string;
@@ -12,7 +14,7 @@ export const scenes: Scene[] = [
     key: "overview",
     title: "综合态势",
     path: "/overview",
-    accent: "#67e8f9",
+    accent: palette.cyan,
     description: "空间示意、产业结构、出租率与今日通行负荷。",
     panels: ["在园企业", "今日工单", "实时负荷", "通行人次"],
   },
@@ -20,7 +22,7 @@ export const scenes: Scene[] = [
     key: "property",
     title: "物业运行",
     path: "/property",
-    accent: "#38bdf8",
+    accent: palette.sky,
     description: "班组进度、设施在线率和今日遗留事项。",
     panels: ["在岗班组", "设施在线", "巡检进度", "遗留问题"],
   },
@@ -28,7 +30,7 @@ export const scenes: Scene[] = [
     key: "workorders",
     title: "工单态势",
     path: "/workorders",
-    accent: "#f5c16c",
+    accent: palette.gold,
     description: "未闭环工单、状态结构和滚动工单墙。",
     panels: ["待派单", "处理中", "今日完工", "超时工单"],
   },
@@ -36,7 +38,7 @@ export const scenes: Scene[] = [
     key: "energy",
     title: "能耗监测",
     path: "/energy",
-    accent: "#34d399",
+    accent: palette.green,
     description: "水电曲线、楼宇用电和异常表计。",
     panels: ["总用电", "总用水", "单位能耗", "异常表计"],
   },
@@ -44,7 +46,7 @@ export const scenes: Scene[] = [
     key: "access",
     title: "通行安防",
     path: "/access",
-    accent: "#a78bfa",
+    accent: palette.violet,
     description: "人车分时、闸口流量、点位和访客。",
     panels: ["人行通行", "车辆通行", "访客在园", "点位在线"],
   },
@@ -52,7 +54,7 @@ export const scenes: Scene[] = [
     key: "alerts",
     title: "告警中心",
     path: "/alerts",
-    accent: "#fb7185",
+    accent: palette.rose,
     description: "等级、来源和滚动告警墙。",
     panels: ["未确认", "处置中", "今日关闭", "高等级"],
   },

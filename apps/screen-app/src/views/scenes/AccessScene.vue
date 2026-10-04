@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from "vue";
+import { palette } from "@park/shared";
 import { bars, flowLines } from "@/charts";
 import CountUp from "@/components/CountUp.vue";
 import EChart from "@/components/EChart.vue";
@@ -9,14 +10,14 @@ import { levelTone, usePark } from "@/composables/usePark";
 const { park } = usePark();
 const flow = computed(() =>
   flowLines(park.value.hours, [
-    { name: "人行", data: park.value.peopleSeries, color: "#a78bfa" },
-    { name: "车行", data: park.value.vehicleSeries, color: "#67e8f9" },
+    { name: "人行", data: park.value.peopleSeries, color: palette.violet },
+    { name: "车行", data: park.value.vehicleSeries, color: palette.cyan },
   ]),
 );
 const gates = computed(() =>
   bars(
     park.value.gates.map((item) => ({ name: item.name, value: item.people + item.cars })),
-    "#a78bfa",
+    palette.violet,
     true,
   ),
 );

@@ -2,7 +2,7 @@
 import { reactive } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { message } from "ant-design-vue";
-import { demoAccounts, site } from "@park/shared";
+import { demoAccounts, screenHref, site } from "@park/shared";
 import { useSessionStore } from "@/stores/session";
 
 const route = useRoute();
@@ -14,7 +14,7 @@ const form = reactive({
   password: "park2026",
 });
 
-const screenHref = import.meta.env.DEV ? "http://localhost:5174/overview" : "/park-campus/screen/";
+const screenEntry = screenHref("/overview");
 
 function goNext() {
   const redirect = typeof route.query.redirect === "string" ? route.query.redirect : "/dashboard";
@@ -58,8 +58,9 @@ function useAccount(username: string, password: string) {
           <li>报修从受理到完工可点击走通</li>
           <li>物业账单可开立并登记收款</li>
           <li>会话保存在本机，退出后需重新登录</li>
+          <li>大屏可直接看，返回时再进控制台</li>
         </ul>
-        <a class="screen-link" :href="screenHref">先看态势大屏 →</a>
+        <a class="screen-link" :href="screenEntry">先看态势大屏 →</a>
       </section>
 
       <section class="card">
@@ -198,8 +199,16 @@ li::before {
   box-shadow: 0 0 10px rgba(103, 232, 249, 0.8);
 }
 .screen-link {
-  color: #f5c16c;
+  display: inline-flex;
+  margin-top: 8px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  color: #07111f;
   letter-spacing: 0.06em;
+  text-decoration: none;
+  font-weight: 600;
+  background: linear-gradient(135deg, #67e8f9, #f5c16c);
+  box-shadow: 0 0 18px rgba(103, 232, 249, 0.35);
 }
 .card {
   padding: 28px 26px 22px;

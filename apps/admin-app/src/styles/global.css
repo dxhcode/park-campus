@@ -1,3 +1,17 @@
+:root {
+  --park-ink: #07111f;
+  --park-blue: #1d6dff;
+  --park-cyan: #67e8f9;
+  --park-gold: #f5c16c;
+  --park-green: #34d399;
+  --park-violet: #a78bfa;
+  --park-rose: #fb7185;
+  --park-sky: #38bdf8;
+  --park-paper: #f3f6fb;
+  --park-gap: 16px;
+  --park-radius: 16px;
+}
+
 html,
 body,
 #app {
@@ -9,7 +23,7 @@ body {
   font-family: "PingFang SC", "Noto Sans SC", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
   background:
     radial-gradient(900px 420px at 100% -10%, rgba(29, 109, 255, 0.12), transparent 60%),
-    #f3f6fb;
+    var(--park-paper);
   color: #0f172a;
 }
 
@@ -23,7 +37,7 @@ body {
   content: "";
   display: block;
   height: 3px;
-  background: linear-gradient(90deg, #1d6dff, #67e8f9 55%, #f5c16c);
+  background: linear-gradient(90deg, var(--park-blue), var(--park-cyan) 55%, var(--park-gold));
 }
 
 .page-stack {
@@ -36,6 +50,7 @@ body {
 
 .page-hero {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   gap: 16px;
   align-items: flex-start;
@@ -48,8 +63,13 @@ body {
   box-shadow: 0 16px 40px rgba(15, 35, 70, 0.06);
 }
 
+.page-hero > div:first-child {
+  flex: 1 1 280px;
+  min-width: 0;
+}
+
 .page-hero .eyebrow {
-  color: #1d6dff;
+  color: var(--park-blue);
   letter-spacing: 0.18em;
   font-size: 12px;
 }
@@ -91,16 +111,42 @@ body {
 .kpi strong {
   display: block;
   margin-top: 6px;
-  font-size: 26px;
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.02em;
+  overflow-wrap: anywhere;
+  line-height: 1.25;
+  font-size: clamp(20px, 1.5vw, 26px);
+}
+
+button.kpi {
+  appearance: none;
+  width: 100%;
+  margin: 0;
+  font: inherit;
+  text-align: left;
+  color: inherit;
+  cursor: pointer;
+}
+
+button.kpi:hover {
+  border-color: rgba(29, 109, 255, 0.4);
+}
+
+button.kpi.on {
+  border-color: var(--park-blue);
+  box-shadow: 0 0 0 3px rgba(29, 109, 255, 0.16);
 }
 
 .kpi strong.orange { color: #d97706; }
-.kpi strong.blue { color: #1d6dff; }
-.kpi strong.purple { color: #7c3aed; }
+.kpi strong.blue { color: var(--park-blue); }
+.kpi strong.purple { color: #6d28d9; }
 .kpi strong.red { color: #e11d48; }
 .kpi strong.green { color: #059669; }
+
+.ant-table-wrapper .ant-table-thead > tr > th {
+  font-weight: 600;
+  background: #f4f8ff !important;
+}
 
 @media (max-width: 960px) {
   .page-hero {

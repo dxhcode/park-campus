@@ -3,7 +3,7 @@ import { computed, h, onMounted, onUnmounted, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { message, type MenuProps } from "ant-design-vue";
 import { BellOutlined, LogoutOutlined, MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons-vue";
-import { isParkKey, screenHref, site } from "@park/shared";
+import { isParkKey, parkByKey, screenHref, site } from "@park/shared";
 import { leafMenus, menuTree, type MenuNode } from "@/menus";
 import { useAppStore } from "@/stores/app";
 import { useSessionStore } from "@/stores/session";
@@ -21,6 +21,7 @@ function syncNarrow() {
   narrow.value = next;
 }
 const screenLink = computed(() => screenHref("/overview", { from: route.path || "/dashboard", park: app.parkKey }));
+const cockpit = computed(() => parkByKey(app.parkKey));
 
 watch(
   () => route.query.park,
@@ -151,7 +152,7 @@ function onMenuClick(info: { key: string | number }) {
             <MenuFoldOutlined v-else />
           </a-button>
           <div>
-            <div class="campus">{{ app.campusName }}</div>
+            <div class="campus">{{ app.campusName }} · 驾驶舱 {{ cockpit.short }}</div>
             <a-breadcrumb>
               <a-breadcrumb-item>首页</a-breadcrumb-item>
               <a-breadcrumb-item v-for="crumb in crumbs" :key="crumb">{{ crumb }}</a-breadcrumb-item>
@@ -378,16 +379,19 @@ function onMenuClick(info: { key: string | number }) {
   height: 40px;
 }
 .screen-link {
-  padding: 6px 10px;
+  padding: 6px 12px;
   border-radius: 999px;
-  color: #0f172a;
+  color: #07111f;
   font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
   text-decoration: none;
-  border: 1px solid rgba(29, 109, 255, 0.18);
-  background: rgba(29, 109, 255, 0.06);
+  border: 1px solid transparent;
+  background: linear-gradient(135deg, #67e8f9, #f5c16c);
+  box-shadow: 0 0 16px rgba(103, 232, 249, 0.28);
 }
 .screen-link:hover {
-  color: #1d6dff;
+  color: #07111f;
 }
 .notice {
   display: flex;
@@ -427,7 +431,8 @@ function onMenuClick(info: { key: string | number }) {
     left: 0;
   }
   .screen-link {
-    display: none;
+    padding: 6px 8px;
+    letter-spacing: 0;
   }
 }
 @media (prefers-reduced-motion: reduce) {

@@ -21,6 +21,7 @@ const filters = reactive({
   status: undefined as string | undefined,
   type: undefined as string | undefined,
   period: "",
+  openOnly: false,
 });
 
 const rows = computed(() =>
@@ -39,10 +40,10 @@ const stats = computed(() => {
     .filter((pay) => pay.paidAt.startsWith(today.slice(0, 7)))
     .reduce((sum, pay) => sum + pay.amount, 0);
   return [
-    { label: "待收金额", value: `¥ ${formatYuan(open.reduce((sum, item) => sum + item.remain, 0))}` },
-    { label: "逾期笔数", value: String(rows.value.filter((item) => item.status === "已逾期").length) },
-    { label: "本月已收", value: `¥ ${formatYuan(receivedThisMonth)}` },
-    { label: "账单总数", value: String(rows.value.length) },
+    { label: "待收金额", value: `¥ ${formatYuan(open.reduce((sum, item) => sum + item.remain, 0))}`, tone: "red", mode: "open" as const },
+    { label: "逾期笔数", value: String(rows.value.filter((item) => item.status === "已逾期").length), tone: "orange", mode: "overdue" as const },
+    { label: "本月已收", value: `¥ ${formatYuan(receivedThisMonth)}`, tone: "green", mode: "received" as const },
+    { label: "账单总数", value: String(rows.value.length), tone: "blue", mode: "all" as const },
   ];
 });
 
@@ -54,6 +55,7 @@ const filtered = computed(() => {
     if (filters.status && item.status !== filters.status) return false;
     if (filters.type && item.type !== filters.type) return false;
     if (filters.period.trim() && !item.period.includes(filters.period.trim())) return false;
+    if (filters.openOnly && item.status === "已缴清") return false;
     return true;
   });
 });
@@ -72,7 +74,7 @@ const columns = [
 ];
 
 const filtersActive = computed(
-  () => Boolean(filters.keyword.trim() || filters.status || filters.type || filters.period.trim()),
+  () => Boolean(filters.keyword.trim() || filters.status || filters.type || filters.period.trim() || filters.openOnly),
 );
 
 function resetFilters() {
@@ -80,6 +82,25 @@ function resetFilters() {
   filters.status = undefined;
   filters.type = undefined;
   filters.period = "";
+  filters.openOnly = false;
+}
+
+function statOn(mode: "open" | "overdue" | "received" | "all") {
+  const extra = Boolean(filters.keyword.trim() || filters.type || filters.period.trim());
+  if (mode === "all") return !filtersActive.value;
+  if (extra) return false;
+  if (mode === "open") return filters.openOnly && !filters.status;
+  if (mode === "overdue") return filters.status === "已逾期" && !filters.openOnly;
+  return false;
+}
+
+function applyStat(mode: "open" | "overdue" | "received" | "all") {
+  if (mode === "received") return;
+  const active = statOn(mode);
+  resetFilters();
+  if (active || mode === "all") return;
+  if (mode === "open") filters.openOnly = true;
+  if (mode === "overdue") filters.status = "已逾期";
 }
 
 function open(id: string) {
@@ -110,7 +131,7 @@ function asRow(record: object) {
       <div>
         <div class="eyebrow">物业服务 · {{ today }}</div>
         <h1>物业缴费</h1>
-        <p>查看临港智慧园区的物业费、能耗和停车账单。可以开立新账单，也可以对未结清账单登记收款。</p>
+        <p>查看临港智慧园区的物业费、能耗和停车账单。点击待收或逾期可筛选，未结清账单可以登记收款。</p>
       </div>
       <a-space wrap>
         <a-button :href="screenLink">{{ screenLabel }}</a-button>
@@ -122,10 +143,19 @@ function asRow(record: object) {
     </header>
 
     <div class="kpi-grid">
-      <article v-for="item in stats" :key="item.label" class="kpi">
+      <component
+        :is="item.mode === 'received' ? 'article' : 'button'"
+        v-for="item in stats"
+        :key="item.label"
+        class="kpi"
+        :class="{ on: statOn(item.mode) }"
+        :type="item.mode === 'received' ? undefined : 'button'"
+        :aria-pressed="item.mode === 'received' ? undefined : statOn(item.mode)"
+        @click="applyStat(item.mode)"
+      >
         <span>{{ item.label }}</span>
-        <strong>{{ item.value }}</strong>
-      </article>
+        <strong :class="item.tone">{{ item.value }}</strong>
+      </component>
     </div>
 
     <a-card class="glow-card" :bordered="false">

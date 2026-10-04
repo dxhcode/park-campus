@@ -18,12 +18,16 @@ const store = useCatalogStore();
 
 const def = computed(() => resourceByKey(String(route.meta.resource ?? "")));
 const screenJump = computed(() => {
-  const key = def.value?.key;
+  const current = def.value;
+  if (!current) return null;
   const park = app.parkKey;
   const short = parkByKey(park).short;
-  if (key === "energy") return { label: `能耗大屏 · ${short}`, href: screenHref("/energy", { from: "/energy", park }) };
-  if (key === "security") return { label: `通行安防 · ${short}`, href: screenHref("/access", { from: "/security", park }) };
-  if (key === "visitors") return { label: `通行大屏 · ${short}`, href: screenHref("/access", { from: "/visitors", park }) };
+  const from = current.path;
+  const jump = (path: string, label: string) => ({ label: `${label} · ${short}`, href: screenHref(path, { from, park }) });
+  if (current.key === "energy") return jump("/energy", "能耗大屏");
+  if (current.key === "security" || current.key === "visitors") return jump("/access", "通行大屏");
+  if (current.key === "park-info" || current.key === "buildings" || current.key === "spaces") return jump("/overview", "空间态势");
+  if (current.key === "companies" || current.key === "contracts" || current.key === "notices") return jump("/overview", "综合态势");
   return null;
 });
 const highlights = computed(() => leafMenus().find((item) => item.key === def.value?.key)?.highlights ?? []);
@@ -70,9 +74,25 @@ const stats = computed(() => {
     const value = stat.field
       ? items.value.filter((row) => row.fields[stat.field!] === stat.equals).length
       : items.value.length;
-    return { label: stat.label, tone: stat.tone, value };
+    return { label: stat.label, tone: stat.tone, value, field: stat.field, equals: stat.equals };
   });
 });
+
+function statOn(item: { field?: string; equals?: string }) {
+  if (!item.field || !item.equals) return !filtersActive.value;
+  const picked = Object.entries(filters.values).filter(([, value]) => Boolean(value));
+  return !filters.keyword.trim() && picked.length === 1 && filters.values[item.field] === item.equals;
+}
+
+function applyStat(item: { field?: string; equals?: string }) {
+  if (!item.field || !item.equals) {
+    resetFilters();
+    return;
+  }
+  const active = statOn(item);
+  resetFilters();
+  if (!active) filters.values[item.field] = item.equals;
+}
 
 const fieldMap = computed(() => {
   const map = new Map<string, FieldDef>();
@@ -157,10 +177,18 @@ function resetData() {
     </div>
 
     <div class="kpi-grid">
-      <article v-for="item in stats" :key="item.label" class="kpi">
+      <button
+        v-for="item in stats"
+        :key="item.label"
+        type="button"
+        class="kpi"
+        :class="{ on: statOn(item) }"
+        :aria-pressed="statOn(item)"
+        @click="applyStat(item)"
+      >
         <span>{{ item.label }}</span>
         <strong :class="item.tone">{{ item.value }}</strong>
-      </article>
+      </button>
     </div>
 
     <a-card class="glow-card" :bordered="false">

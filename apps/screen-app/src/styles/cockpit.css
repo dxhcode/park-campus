@@ -143,7 +143,7 @@
   display: block;
   height: 100%;
   border-radius: inherit;
-  background: linear-gradient(90deg, #67e8f9, #f5c16c);
+  background: linear-gradient(90deg, var(--park-cyan), var(--park-gold));
   box-shadow: 0 0 10px rgba(103, 232, 249, 0.7);
 }
 .layout-orders {
@@ -221,7 +221,7 @@
 }
 .ticker-track span { display: inline-flex; gap: 8px; align-items: baseline; white-space: nowrap; }
 .ticker-track em { color: rgba(186, 230, 253, 0.65); font-style: normal; font-size: 12px; letter-spacing: 0.08em; }
-.ticker-track strong { color: #f8fbff; font-weight: 650; }
+.ticker-track strong { color: #f8fbff; font-weight: 600; }
 .scene-board { position: relative; z-index: 1; }
 .hop-ribbon {
   display: flex;
@@ -246,7 +246,6 @@
 }
 .back-link {
   display: inline-block;
-  margin-top: 6px;
   padding: 4px 10px;
   border-radius: 999px;
   text-decoration: none;
@@ -260,7 +259,7 @@
 }
 .park-switch button.on {
   color: #07111f;
-  background: linear-gradient(90deg, #67e8f9, #f5c16c);
+  background: linear-gradient(90deg, var(--park-cyan), var(--park-gold));
   border-color: transparent;
   box-shadow: 0 0 14px rgba(103, 232, 249, 0.45);
 }

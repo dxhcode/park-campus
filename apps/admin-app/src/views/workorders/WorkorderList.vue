@@ -26,16 +26,17 @@ const filters = reactive({
   status: undefined as string | undefined,
   priority: undefined as string | undefined,
   category: undefined as string | undefined,
+  urgentOpen: false,
 });
 
 const stats = computed(() => {
   const count = (status: string) => store.items.filter((item) => item.status === status).length;
   const urgent = store.items.filter((item) => item.priority === "紧急" && item.status !== "已完工" && item.status !== "已关闭").length;
   return [
-    { label: "待受理", value: count("待受理"), tone: "orange" },
-    { label: "处理中", value: count("处理中"), tone: "blue" },
-    { label: "待验收", value: count("待验收"), tone: "purple" },
-    { label: "紧急未闭环", value: urgent, tone: "red" },
+    { label: "待受理", value: count("待受理"), tone: "orange", status: "待受理", urgentOpen: false },
+    { label: "处理中", value: count("处理中"), tone: "blue", status: "处理中", urgentOpen: false },
+    { label: "待验收", value: count("待验收"), tone: "purple", status: "待验收", urgentOpen: false },
+    { label: "紧急未闭环", value: urgent, tone: "red", status: undefined as string | undefined, urgentOpen: true },
   ];
 });
 
@@ -47,6 +48,7 @@ const filtered = computed(() => {
     if (filters.status && item.status !== filters.status) return false;
     if (filters.priority && item.priority !== filters.priority) return false;
     if (filters.category && item.category !== filters.category) return false;
+    if (filters.urgentOpen && !(item.priority === "紧急" && item.status !== "已完工" && item.status !== "已关闭")) return false;
     return true;
   });
 });
@@ -64,7 +66,7 @@ const columns = [
 ];
 
 const filtersActive = computed(
-  () => Boolean(filters.keyword.trim() || filters.status || filters.priority || filters.category),
+  () => Boolean(filters.keyword.trim() || filters.status || filters.priority || filters.category || filters.urgentOpen),
 );
 
 function resetFilters() {
@@ -72,6 +74,21 @@ function resetFilters() {
   filters.status = undefined;
   filters.priority = undefined;
   filters.category = undefined;
+  filters.urgentOpen = false;
+}
+
+function statOn(item: { status?: string; urgentOpen: boolean }) {
+  if (filters.keyword.trim() || filters.priority || filters.category) return false;
+  if (item.urgentOpen) return filters.urgentOpen && !filters.status;
+  return filters.status === item.status && !filters.urgentOpen;
+}
+
+function applyStat(item: { status?: string; urgentOpen: boolean }) {
+  const active = statOn(item);
+  resetFilters();
+  if (active) return;
+  if (item.urgentOpen) filters.urgentOpen = true;
+  else filters.status = item.status;
 }
 
 function open(id: string) {
@@ -101,7 +118,7 @@ function asRow(record: object) {
       <div>
         <div class="eyebrow">物业服务</div>
         <h1>报修工单</h1>
-        <p>受理、派单、验收和完工都在浏览器里走通。改动写入本机，刷新后还在。</p>
+        <p>受理、派单、验收和完工都在浏览器里走通。点击上方指标可筛选，改动写入本机。</p>
       </div>
       <a-space wrap>
         <a-button :href="screenLink">{{ screenLabel }}</a-button>
@@ -113,10 +130,18 @@ function asRow(record: object) {
     </header>
 
     <div class="kpi-grid">
-      <article v-for="item in stats" :key="item.label" class="kpi">
+      <button
+        v-for="item in stats"
+        :key="item.label"
+        type="button"
+        class="kpi"
+        :class="{ on: statOn(item) }"
+        :aria-pressed="statOn(item)"
+        @click="applyStat(item)"
+      >
         <span>{{ item.label }}</span>
         <strong :class="item.tone">{{ item.value }}</strong>
-      </article>
+      </button>
     </div>
 
     <a-card class="glow-card" :bordered="false">

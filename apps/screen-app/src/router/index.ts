@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
+import { palette } from "@park/shared";
 import ScreenLayout from "@/layouts/ScreenLayout.vue";
 import ScenePage from "@/views/ScenePage.vue";
 import { scenes } from "@/scenes";
@@ -29,7 +30,7 @@ export const router = createRouter({
           meta: {
             title: "未知场景",
             description: "该场景尚未配置。请从顶部导航切换已开通的态势页。",
-            accent: "#67e8f9",
+            accent: palette.cyan,
             panels: ["场景导航", "综合态势", "告警中心", "返回入口"],
           },
         },

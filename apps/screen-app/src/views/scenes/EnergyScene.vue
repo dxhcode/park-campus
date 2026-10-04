@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from "vue";
+import { palette } from "@park/shared";
 import { bars, flowLines, ring } from "@/charts";
 import CountUp from "@/components/CountUp.vue";
 import EChart from "@/components/EChart.vue";
@@ -9,12 +10,12 @@ import { levelTone, usePark } from "@/composables/usePark";
 const { park } = usePark();
 const trend = computed(() =>
   flowLines(park.value.hours, [
-    { name: "用电 kW", data: park.value.powerSeries, color: "#34d399" },
-    { name: "用水 t", data: park.value.waterSeries, color: "#67e8f9" },
+    { name: "用电 kW", data: park.value.powerSeries, color: palette.green },
+    { name: "用水 t", data: park.value.waterSeries, color: palette.cyan },
   ]),
 );
 const split = computed(() => ring(park.value.energySplit));
-const buildings = computed(() => bars(park.value.buildingsEnergy, "#34d399"));
+const buildings = computed(() => bars(park.value.buildingsEnergy, palette.green));
 const abnormal = computed(() => park.value.meters.filter((item) => item.status !== "正常").length);
 </script>
 

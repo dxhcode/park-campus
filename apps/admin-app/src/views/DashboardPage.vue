@@ -89,7 +89,7 @@ const kpis = computed(() => [
       <div>
         <div class="eyebrow">首页 · {{ today }}</div>
         <h1>工作台</h1>
-        <p>{{ session.user?.displayName ?? "同事" }}，临港智慧园区今天仍需处理的报修、欠费、访客和公告都汇总在这里。</p>
+        <p>{{ session.user?.displayName ?? "同事" }}，管理端示例仍是临港智慧园区的报修、欠费、访客和公告。态势驾驶舱当前指向 {{ currentPark.name }}，可在下方换园后进入。</p>
       </div>
     </header>
 
@@ -240,7 +240,7 @@ const kpis = computed(() => [
   gap: 10px;
 }
 .park-picks { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-.hop-links { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+.hop-links { grid-template-columns: repeat(auto-fit, minmax(132px, 1fr)); }
 .park-picks button,
 .hop-links a {
   display: flex;

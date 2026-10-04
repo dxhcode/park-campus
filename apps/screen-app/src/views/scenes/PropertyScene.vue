@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from "vue";
+import { palette } from "@park/shared";
 import { bars, radar } from "@/charts";
 import EChart from "@/components/EChart.vue";
 import GlassPanel from "@/components/GlassPanel.vue";
@@ -13,7 +14,7 @@ const progress = computed(() => Math.round(park.value.shifts.reduce((sum, item) 
 const facilityBars = computed(() =>
   bars(
     park.value.facilities.map((item) => ({ name: item.name, value: Math.round((item.online / item.total) * 100) })),
-    "#38bdf8",
+    palette.sky,
     true,
   ),
 );

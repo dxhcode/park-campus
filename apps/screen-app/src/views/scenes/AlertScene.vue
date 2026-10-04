@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from "vue";
+import { palette } from "@park/shared";
 import { bars, ring } from "@/charts";
 import CountUp from "@/components/CountUp.vue";
 import EChart from "@/components/EChart.vue";
@@ -8,7 +9,7 @@ import { levelTone, usePark } from "@/composables/usePark";
 
 const { park } = usePark();
 const levels = computed(() => ring(park.value.alertLevels));
-const systems = computed(() => bars(park.value.alertSystems, "#fb7185", true));
+const systems = computed(() => bars(park.value.alertSystems, palette.rose, true));
 const openCount = computed(() => park.value.alerts.filter((item) => item.status !== "已关闭").length);
 const pending = computed(() => park.value.alerts.filter((item) => item.status === "未确认").length);
 const handling = computed(() => park.value.alerts.filter((item) => item.status === "处置中").length);

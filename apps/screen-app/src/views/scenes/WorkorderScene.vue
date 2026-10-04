@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from "vue";
+import { palette } from "@park/shared";
 import { bars, ring } from "@/charts";
 import CountUp from "@/components/CountUp.vue";
 import EChart from "@/components/EChart.vue";
@@ -8,7 +9,7 @@ import { levelTone, usePark } from "@/composables/usePark";
 
 const { park } = usePark();
 const mix = computed(() => ring(park.value.orderStatus));
-const categories = computed(() => bars(park.value.orderCategories, "#f5c16c", true));
+const categories = computed(() => bars(park.value.orderCategories, palette.gold, true));
 const wall = computed(() => [...park.value.orders, ...park.value.orders]);
 </script>
 

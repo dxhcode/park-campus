@@ -215,7 +215,7 @@ onUnmounted(() => {
 }
 .topbar {
   display: grid;
-  grid-template-columns: minmax(240px, 1fr) auto minmax(180px, 1fr);
+  grid-template-columns: minmax(220px, 1.1fr) minmax(0, auto) minmax(168px, 0.9fr);
   gap: 16px;
   align-items: center;
   padding: 12px 16px;
@@ -248,8 +248,8 @@ onUnmounted(() => {
 }
 h1 {
   margin: 2px 0 0;
-  font-size: 22px;
-  letter-spacing: 0.06em;
+  font-size: clamp(16px, 2vw, 22px);
+  letter-spacing: 0.04em;
 }
 .nav {
   display: flex;
@@ -260,6 +260,8 @@ h1 {
 .nav a {
   padding: 8px 12px;
   border-radius: 999px;
+  font-size: 13px;
+  letter-spacing: 0.04em;
   color: rgba(226, 232, 240, 0.82);
   text-decoration: none;
   border: 1px solid rgba(148, 197, 255, 0.18);
@@ -284,7 +286,12 @@ h1 {
   }
 }
 .clock {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
   justify-self: end;
+  min-width: 0;
   text-align: right;
 }
 .clock span {
@@ -298,7 +305,6 @@ h1 {
   font-size: 16px;
 }
 .unlock {
-  margin-top: 6px;
   padding: 4px 10px;
   border-radius: 999px;
   border: 1px solid rgba(103, 232, 249, 0.35);
@@ -375,6 +381,7 @@ h1 {
     grid-template-columns: 1fr;
   }
   .clock {
+    align-items: flex-start;
     justify-self: start;
     text-align: left;
   }

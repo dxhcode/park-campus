@@ -1,4 +1,5 @@
 import type { EChartsOption } from "echarts";
+import { chartSeries, palette } from "@park/shared";
 import type { NamedValue } from "@/data/parks";
 
 const tip = {
@@ -58,7 +59,7 @@ export function flowLines(
 
 export function ring(data: NamedValue[]): EChartsOption {
   return {
-    color: ["#67e8f9", "#f5c16c", "#34d399", "#a78bfa", "#fb7185", "#38bdf8"],
+    color: [...chartSeries],
     tooltip: { trigger: "item", ...tip },
     legend: { bottom: 0, textStyle: { color: "#dbeafe", fontSize: 11 } },
     animationDuration: 900,
@@ -81,7 +82,7 @@ export function ring(data: NamedValue[]): EChartsOption {
   };
 }
 
-export function bars(data: NamedValue[], color = "#67e8f9", horizontal = false): EChartsOption {
+export function bars(data: NamedValue[], color: string = palette.cyan, horizontal = false): EChartsOption {
   const names = data.map((item) => item.name);
   const values = data.map((item) => item.value);
   return {
@@ -111,7 +112,7 @@ export function bars(data: NamedValue[], color = "#67e8f9", horizontal = false):
   };
 }
 
-export function gauge(value: number, color = "#67e8f9"): EChartsOption {
+export function gauge(value: number, color: string = palette.cyan): EChartsOption {
   return {
     animationDuration: 1000,
     animation: animate(),
@@ -166,8 +167,8 @@ export function radar(data: NamedValue[]): EChartsOption {
             value: data.map((item) => item.value),
             name: "在岗质量",
             areaStyle: { color: "rgba(103, 232, 249, 0.28)" },
-            lineStyle: { color: "#67e8f9", width: 2 },
-            itemStyle: { color: "#f5c16c" },
+            lineStyle: { color: palette.cyan, width: 2 },
+            itemStyle: { color: palette.gold },
           },
         ],
       },

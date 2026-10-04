@@ -16,13 +16,14 @@ const adminRoots = [
   "/security",
   "/visitors",
   "/notices",
-  "/enterprise/companies",
-  "/enterprise/contracts",
+  "/enterprise",
+  "/park",
+  "/system",
 ];
 
 export const sceneAdminFallback: Record<string, string> = {
   overview: "/dashboard",
-  property: "/workorders",
+  property: "/dashboard",
   workorders: "/workorders",
   energy: "/energy",
   access: "/visitors",
@@ -100,7 +101,10 @@ export function adminFromLabel(from: unknown): string {
   if (path.startsWith("/security")) return "安防监控";
   if (path.startsWith("/visitors")) return "访客通行";
   if (path.startsWith("/notices")) return "通知公告";
-  if (path.startsWith("/enterprise")) return "企业合同";
+  if (path.startsWith("/enterprise/contracts")) return "合同管理";
+  if (path.startsWith("/enterprise")) return "入驻企业";
+  if (path.startsWith("/park")) return "园区管理";
+  if (path.startsWith("/system")) return "系统设置";
   if (path.startsWith("/dashboard")) return "工作台";
   return "管理端";
 }

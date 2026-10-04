@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from "vue";
+import { palette } from "@park/shared";
 import { bars, flowLines, gauge, ring } from "@/charts";
 import CountUp from "@/components/CountUp.vue";
 import EChart from "@/components/EChart.vue";
@@ -12,8 +13,8 @@ const occupancy = computed(() => gauge(park.value.occupancy));
 const industries = computed(() => ring(park.value.industries));
 const flow = computed(() =>
   flowLines(park.value.hours, [
-    { name: "通行人次", data: park.value.peopleSeries, color: "#67e8f9" },
-    { name: "用电 kW", data: park.value.powerSeries, color: "#f5c16c" },
+    { name: "通行人次", data: park.value.peopleSeries, color: palette.cyan },
+    { name: "用电 kW", data: park.value.powerSeries, color: palette.gold },
   ]),
 );
 const money = computed(() =>
@@ -22,7 +23,7 @@ const money = computed(() =>
       { name: "应收折算", value: Number(park.value.receivable.replace(/[^\d.]/g, "")) },
       { name: "已收折算", value: Number(park.value.collected.replace(/[^\d.]/g, "")) },
     ],
-    "#34d399",
+    palette.green,
   ),
 );
 </script>
