@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>园区运营平台 · 管理控制台</title>
+    <link rel="icon" type="image/svg+xml" href="/park-campus/admin/favicon.svg" />
+    <script>
+      (function () {
+        try {
+          var key = "park-campus-gh-path";
+          var stored = sessionStorage.getItem(key);
+          if (!stored) return;
+          sessionStorage.removeItem(key);
+          var base = "/park-campus/admin";
+          if (stored !== base && stored.indexOf(base + "/") !== 0 && stored.indexOf(base + "?") !== 0 && stored.indexOf(base + "#") !== 0) return;
+          var cut = stored.length;
+          var queryAt = stored.indexOf("?");
+          var hashAt = stored.indexOf("#");
+          if (queryAt >= 0) cut = Math.min(cut, queryAt);
+          if (hashAt >= 0) cut = Math.min(cut, hashAt);
+          var pathOnly = stored.slice(0, cut);
+          if (pathOnly.length > base.length + 1 && pathOnly.endsWith("/")) pathOnly = pathOnly.slice(0, -1);
+          var next = pathOnly + stored.slice(cut);
+          if (next !== location.pathname + location.search + location.hash) history.replaceState(null, "", next);
+        } catch (error) {}
+      })();
+    </script>
+    <script type="module" crossorigin src="/park-campus/admin/assets/index-SXa-s090.js"></script>
+    <link rel="stylesheet" crossorigin href="/park-campus/admin/assets/index-CGMNqvZg.css">
+  </head>
+  <body>
+    <div id="app"></div>
+  </body>
+</html>
