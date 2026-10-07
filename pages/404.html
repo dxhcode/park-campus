@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <title>正在进入园区运营平台</title>
+    <script>
+      (function () {
+        var path = location.pathname + location.search + location.hash;
+        var match = location.pathname.match(/\/park-campus\/(admin|screen)(\/.*)?$/);
+        if (!match) {
+          location.replace("/park-campus/");
+          return;
+        }
+        try {
+          sessionStorage.setItem("park-campus-gh-path", path);
+        } catch (error) {}
+        location.replace("/park-campus/" + match[1] + "/");
+      })();
+    </script>
+  </head>
+  <body></body>
+</html>

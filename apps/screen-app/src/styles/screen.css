@@ -1,0 +1,51 @@
+:root {
+  --park-ink: #07111f;
+  --park-blue: #1d6dff;
+  --park-cyan: #67e8f9;
+  --park-gold: #f5c16c;
+  --park-green: #34d399;
+  --park-violet: #a78bfa;
+  --park-rose: #fb7185;
+  --park-sky: #38bdf8;
+  --park-text: #e8f1ff;
+  --park-gap: 16px;
+  --park-radius: 16px;
+}
+
+html,
+body,
+#app {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  font-family: "PingFang SC", "Noto Sans SC", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
+  color: var(--park-text);
+  background: #050814;
+}
+
+#app {
+  min-height: 100vh;
+}
+
+.scene-fade-enter-active,
+.scene-fade-leave-active {
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.scene-fade-enter-from,
+.scene-fade-leave-to {
+  opacity: 0;
+  transform: translateY(8px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .scene-fade-enter-active,
+  .scene-fade-leave-active {
+    transition: none;
+  }
+}
+
+.ant-skeleton-content .ant-skeleton-paragraph > li,
+.ant-skeleton-title {
+  background: linear-gradient(90deg, rgba(148, 197, 255, 0.08) 25%, rgba(103, 232, 249, 0.22) 37%, rgba(148, 197, 255, 0.08) 63%) !important;
+}
