@@ -1,4 +1,5 @@
-import type { ParkKey } from "@park/shared";
+import { parks as masterParks, queryChartSeries } from "@park/mock";
+import { parkMasterIds, type ParkKey } from "@park/shared";
 
 export interface NamedValue {
   name: string;
@@ -566,6 +567,27 @@ const cockpits: Record<ParkKey, Cockpit> = {
   guanggu,
 };
 
+function withSharedMaster(cockpit: Cockpit): Cockpit {
+  const parkId = parkMasterIds[cockpit.key];
+  const master = masterParks.find((item) => item.id === parkId);
+  const industry = queryChartSeries({ parkId, metric: "产业" })[0];
+  const industries = industry
+    ? industry.categories.map((name, index) => ({
+        name,
+        value: industry.series[0]?.data[index] ?? 0,
+      }))
+    : cockpit.industries;
+  if (!master) return { ...cockpit, industries };
+  return {
+    ...cockpit,
+    name: master.name,
+    slogan: master.description,
+    hotline: master.phone,
+    dutyName: master.manager,
+    industries,
+  };
+}
+
 export function cockpitOf(key: ParkKey): Cockpit {
-  return cockpits[key];
+  return withSharedMaster(cockpits[key]);
 }

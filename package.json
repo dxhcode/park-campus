@@ -8,12 +8,13 @@
     "node": ">=20"
   },
   "pnpm": {
-    "onlyBuiltDependencies": ["esbuild"]
+    "onlyBuiltDependencies": ["esbuild", "@park/theme", "@park/components", "@park/mock"]
   },
   "scripts": {
     "dev": "pnpm --parallel --filter @park/admin-app --filter @park/screen-app dev",
     "build": "pnpm --filter @park/admin-app --filter @park/screen-app build",
     "typecheck": "pnpm --filter @park/admin-app --filter @park/screen-app typecheck",
-    "pages:build": "node scripts/pages-build.mjs"
+    "pages:build": "node scripts/pages-build.mjs",
+    "pages:publish": "node scripts/pages-publish.mjs"
   }
 }

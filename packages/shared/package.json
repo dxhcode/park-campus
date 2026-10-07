@@ -5,5 +5,8 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@park/mock": "github:dxhcode/park-shared#a1313c638eec7a9d3cf2fcd2a0aacc095fe0551f&path:packages/mock"
   }
 }

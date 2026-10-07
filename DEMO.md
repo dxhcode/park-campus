@@ -18,7 +18,9 @@
 | 缴费 | http://localhost:5173/billing | https://dxhcode.github.io/park-campus/admin/billing |
 | 大屏 | http://localhost:5174/overview | https://dxhcode.github.io/park-campus/screen/overview |
 
-本地先在仓库根目录执行 `pnpm install` 和 `pnpm dev`。管理端是 5173，大屏是 5174。Pages 要等仓库 Settings → Pages 使用分支 `dist`、目录 `/ (root)` 之后才打得开；保存后若仍是 404，等 GitHub 第一次构建完成。
+本地先在仓库根目录执行 `pnpm install` 和 `pnpm dev`。管理端是 5173，大屏是 5174。`pnpm install` 会装上 `park-shared` 的主题、组件和模拟数据。更新线上站点时，在干净工作区执行 `pnpm pages:publish`，把产物推到 `dist` 分支根目录。Pages 要等仓库 Settings → Pages 使用分支 `dist`、目录 `/ (root)` 之后才打得开；保存后若仍是 404，等 GitHub 第一次构建完成。
+
+大屏上的三园名称、服务热线和值班负责人来自共享主数据，产业结构环图是这些企业的从业人数。通行、负荷、工单和金额仍是本仓库的驾驶舱数字。演示账号不变。
 
 如果观众中途改乱了数据，各列表右上角都有「恢复示例」。
 

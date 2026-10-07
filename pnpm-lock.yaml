@@ -13,9 +13,18 @@ importers:
       '@ant-design/icons-vue':
         specifier: ^7.0.1
         version: 7.0.1(vue@3.5.43(typescript@5.9.3))
+      '@park/components':
+        specifier: github:dxhcode/park-shared#a1313c638eec7a9d3cf2fcd2a0aacc095fe0551f&path:packages/components
+        version: https://codeload.github.com/dxhcode/park-shared/tar.gz/a1313c638eec7a9d3cf2fcd2a0aacc095fe0551f#path:packages/components(ant-design-vue@4.2.6(vue@3.5.43(typescript@5.9.3)))(vue@3.5.43(typescript@5.9.3))
+      '@park/mock':
+        specifier: github:dxhcode/park-shared#a1313c638eec7a9d3cf2fcd2a0aacc095fe0551f&path:packages/mock
+        version: https://codeload.github.com/dxhcode/park-shared/tar.gz/a1313c638eec7a9d3cf2fcd2a0aacc095fe0551f#path:packages/mock
       '@park/shared':
         specifier: workspace:*
         version: link:../../packages/shared
+      '@park/theme':
+        specifier: github:dxhcode/park-shared#a1313c638eec7a9d3cf2fcd2a0aacc095fe0551f&path:packages/theme
+        version: https://codeload.github.com/dxhcode/park-shared/tar.gz/a1313c638eec7a9d3cf2fcd2a0aacc095fe0551f#path:packages/theme(ant-design-vue@4.2.6(vue@3.5.43(typescript@5.9.3)))
       ant-design-vue:
         specifier: ^4.2.6
         version: 4.2.6(vue@3.5.43(typescript@5.9.3))
@@ -47,9 +56,18 @@ importers:
       '@ant-design/icons-vue':
         specifier: ^7.0.1
         version: 7.0.1(vue@3.5.43(typescript@5.9.3))
+      '@park/components':
+        specifier: github:dxhcode/park-shared#a1313c638eec7a9d3cf2fcd2a0aacc095fe0551f&path:packages/components
+        version: https://codeload.github.com/dxhcode/park-shared/tar.gz/a1313c638eec7a9d3cf2fcd2a0aacc095fe0551f#path:packages/components(ant-design-vue@4.2.6(vue@3.5.43(typescript@5.9.3)))(vue@3.5.43(typescript@5.9.3))
+      '@park/mock':
+        specifier: github:dxhcode/park-shared#a1313c638eec7a9d3cf2fcd2a0aacc095fe0551f&path:packages/mock
+        version: https://codeload.github.com/dxhcode/park-shared/tar.gz/a1313c638eec7a9d3cf2fcd2a0aacc095fe0551f#path:packages/mock
       '@park/shared':
         specifier: workspace:*
         version: link:../../packages/shared
+      '@park/theme':
+        specifier: github:dxhcode/park-shared#a1313c638eec7a9d3cf2fcd2a0aacc095fe0551f&path:packages/theme
+        version: https://codeload.github.com/dxhcode/park-shared/tar.gz/a1313c638eec7a9d3cf2fcd2a0aacc095fe0551f#path:packages/theme(ant-design-vue@4.2.6(vue@3.5.43(typescript@5.9.3)))
       ant-design-vue:
         specifier: ^4.2.6
         version: 4.2.6(vue@3.5.43(typescript@5.9.3))
@@ -79,7 +97,11 @@ importers:
         specifier: ^2.2.8
         version: 2.2.12(typescript@5.9.3)
 
-  packages/shared: {}
+  packages/shared:
+    dependencies:
+      '@park/mock':
+        specifier: github:dxhcode/park-shared#a1313c638eec7a9d3cf2fcd2a0aacc095fe0551f&path:packages/mock
+        version: https://codeload.github.com/dxhcode/park-shared/tar.gz/a1313c638eec7a9d3cf2fcd2a0aacc095fe0551f#path:packages/mock
 
 packages:
 
@@ -290,6 +312,23 @@ packages:
     cpu: [x64]
     os: [linux]
     libc: [glibc]
+
+  '@park/components@https://codeload.github.com/dxhcode/park-shared/tar.gz/a1313c638eec7a9d3cf2fcd2a0aacc095fe0551f#path:packages/components':
+    resolution: {path: packages/components, tarball: https://codeload.github.com/dxhcode/park-shared/tar.gz/a1313c638eec7a9d3cf2fcd2a0aacc095fe0551f}
+    version: 0.1.0
+    peerDependencies:
+      ant-design-vue: ^4.2.0
+      vue: ^3.5.0
+
+  '@park/mock@https://codeload.github.com/dxhcode/park-shared/tar.gz/a1313c638eec7a9d3cf2fcd2a0aacc095fe0551f#path:packages/mock':
+    resolution: {path: packages/mock, tarball: https://codeload.github.com/dxhcode/park-shared/tar.gz/a1313c638eec7a9d3cf2fcd2a0aacc095fe0551f}
+    version: 0.1.0
+
+  '@park/theme@https://codeload.github.com/dxhcode/park-shared/tar.gz/a1313c638eec7a9d3cf2fcd2a0aacc095fe0551f#path:packages/theme':
+    resolution: {path: packages/theme, tarball: https://codeload.github.com/dxhcode/park-shared/tar.gz/a1313c638eec7a9d3cf2fcd2a0aacc095fe0551f}
+    version: 0.1.0
+    peerDependencies:
+      ant-design-vue: ^4.2.0
 
   '@rollup/rollup-android-arm-eabi@4.63.5':
     resolution: {integrity: sha512-J25QJU+B78T4FhhBsNpLJyVWOi31mwtpcMwywHmOKH65Q9IWGA81gPj+dnwlhU8wktVriYE+tFAaQgrnJRzAZg==}
@@ -889,6 +928,17 @@ snapshots:
 
   '@napi-rs/lzma-linux-x64-gnu@1.5.1':
     optional: true
+
+  '@park/components@https://codeload.github.com/dxhcode/park-shared/tar.gz/a1313c638eec7a9d3cf2fcd2a0aacc095fe0551f#path:packages/components(ant-design-vue@4.2.6(vue@3.5.43(typescript@5.9.3)))(vue@3.5.43(typescript@5.9.3))':
+    dependencies:
+      ant-design-vue: 4.2.6(vue@3.5.43(typescript@5.9.3))
+      vue: 3.5.43(typescript@5.9.3)
+
+  '@park/mock@https://codeload.github.com/dxhcode/park-shared/tar.gz/a1313c638eec7a9d3cf2fcd2a0aacc095fe0551f#path:packages/mock': {}
+
+  '@park/theme@https://codeload.github.com/dxhcode/park-shared/tar.gz/a1313c638eec7a9d3cf2fcd2a0aacc095fe0551f#path:packages/theme(ant-design-vue@4.2.6(vue@3.5.43(typescript@5.9.3)))':
+    dependencies:
+      ant-design-vue: 4.2.6(vue@3.5.43(typescript@5.9.3))
 
   '@rollup/rollup-android-arm-eabi@4.63.5':
     optional: true

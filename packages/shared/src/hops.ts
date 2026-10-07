@@ -1,7 +1,22 @@
+import { parks as masterParks } from "@park/mock";
+
+/** 与 @park/mock 主数据 id 对齐。短名和城市文案仍按本端驾驶舱演示使用。 */
+export const parkMasterIds = {
+  binjiang: "park-binjiang",
+  lingang: "park-lingang",
+  guanggu: "park-guanggu",
+} as const;
+
+function masterName(id: string) {
+  const found = masterParks.find((item) => item.id === id);
+  if (!found) throw new Error(`共享主数据缺少园区 ${id}`);
+  return found.name;
+}
+
 export const parks = [
-  { key: "binjiang", name: "滨江云栖科创园", short: "云栖", city: "杭州滨江" },
-  { key: "lingang", name: "临港智造产业园", short: "临港", city: "上海临港" },
-  { key: "guanggu", name: "光谷生命科学园", short: "光谷", city: "武汉光谷" },
+  { key: "binjiang", name: masterName(parkMasterIds.binjiang), short: "云栖", city: "杭州滨江" },
+  { key: "lingang", name: masterName(parkMasterIds.lingang), short: "临港", city: "上海临港" },
+  { key: "guanggu", name: masterName(parkMasterIds.guanggu), short: "光谷", city: "武汉光谷" },
 ] as const;
 
 export type ParkKey = (typeof parks)[number]["key"];

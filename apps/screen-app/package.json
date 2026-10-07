@@ -11,7 +11,10 @@
   },
   "dependencies": {
     "@ant-design/icons-vue": "^7.0.1",
+    "@park/components": "github:dxhcode/park-shared#a1313c638eec7a9d3cf2fcd2a0aacc095fe0551f&path:packages/components",
+    "@park/mock": "github:dxhcode/park-shared#a1313c638eec7a9d3cf2fcd2a0aacc095fe0551f&path:packages/mock",
     "@park/shared": "workspace:*",
+    "@park/theme": "github:dxhcode/park-shared#a1313c638eec7a9d3cf2fcd2a0aacc095fe0551f&path:packages/theme",
     "ant-design-vue": "^4.2.6",
     "echarts": "^6.1.0",
     "pinia": "^3.0.3",

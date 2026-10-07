@@ -2,6 +2,7 @@
 import { computed, reactive } from "vue";
 import { useRouter } from "vue-router";
 import { message } from "ant-design-vue";
+import { searchByFields } from "@park/mock";
 import { parkByKey, screenHref } from "@park/shared";
 import {
   priorityColor,
@@ -41,10 +42,15 @@ const stats = computed(() => {
 });
 
 const filtered = computed(() => {
-  const keyword = filters.keyword.trim().toLowerCase();
-  return store.items.filter((item) => {
-    const haystack = `${item.code} ${item.title} ${item.company} ${item.location} ${item.reporter} ${item.building}`.toLowerCase();
-    if (keyword && !haystack.includes(keyword)) return false;
+  const matched = searchByFields(store.items, filters.keyword, [
+    "code",
+    "title",
+    "company",
+    "location",
+    "reporter",
+    "building",
+  ]);
+  return matched.filter((item) => {
     if (filters.status && item.status !== filters.status) return false;
     if (filters.priority && item.priority !== filters.priority) return false;
     if (filters.category && item.category !== filters.category) return false;

@@ -3,6 +3,7 @@ import { computed, h, onMounted, onUnmounted, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { message, type MenuProps } from "ant-design-vue";
 import { BellOutlined, LogoutOutlined, MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons-vue";
+import { RouteMotion } from "@park/components";
 import { isParkKey, parkByKey, screenHref, site } from "@park/shared";
 import { leafMenus, menuTree, type MenuNode } from "@/menus";
 import { useAppStore } from "@/stores/app";
@@ -200,9 +201,9 @@ function onMenuClick(info: { key: string | number }) {
       </a-layout-header>
       <a-layout-content class="content">
         <router-view v-slot="{ Component }">
-          <transition name="route-fade" mode="out-in">
+          <RouteMotion>
             <component :is="Component" :key="route.path" />
-          </transition>
+          </RouteMotion>
         </router-view>
       </a-layout-content>
     </a-layout>
