@@ -2,6 +2,7 @@
 import { computed, reactive } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { message } from "ant-design-vue";
+import { searchByFields } from "@park/mock";
 import { parkByKey, screenHref } from "@park/shared";
 import ListEmpty from "@/components/ListEmpty.vue";
 import { showValue, tagColor } from "@/catalog/present";
@@ -52,13 +53,15 @@ const filtersActive = computed(() => Boolean(filters.keyword.trim() || Object.va
 const filtered = computed(() => {
   const current = def.value;
   if (!current) return [];
-  const keyword = filters.keyword.trim().toLowerCase();
   const searchKeys = current.fields.filter((field) => field.search || field.key === current.nameField).map((field) => field.key);
+  const flat = items.value.map((row) => {
+    const entry: { code: string } & Record<string, string> = { code: row.code };
+    for (const key of searchKeys) entry[key] = row.fields[key] ?? "";
+    return entry;
+  });
+  const matchedCodes = new Set(searchByFields(flat, filters.keyword, ["code", ...searchKeys]).map((entry) => entry.code));
   return items.value.filter((row) => {
-    if (keyword) {
-      const haystack = [row.code, ...searchKeys.map((key) => row.fields[key] ?? "")].join(" ").toLowerCase();
-      if (!haystack.includes(keyword)) return false;
-    }
+    if (!matchedCodes.has(row.code)) return false;
     for (const field of filterFields.value) {
       const picked = filters.values[field.key];
       if (picked && row.fields[field.key] !== picked) return false;

@@ -6,7 +6,7 @@
 
 - `apps/admin-app`：管理控制台，深色侧栏与中文业务菜单
 - `apps/screen-app`：态势大屏，全屏科技风场景壳
-- `packages/shared`：两端共用的站点名称
+- `packages/shared`：两端共用的站点名称、演示账号和跳转地址。三园名称来自 `park-shared` 的 `@park/mock`
 
 管理端已接通演示登录。侧栏每个菜单都能打开：报修工单、物业缴费，以及园区、企业、访客、表计、点位、公告和系统台账。数据写在浏览器本地。态势大屏是三园驾驶舱，含示意地图、图表和滚动指标。
 
@@ -21,6 +21,20 @@ pnpm dev
 - 态势大屏：http://localhost:5174/
 
 也可以单独启动：`pnpm --filter @park/admin-app dev`、`pnpm --filter @park/screen-app dev`。
+
+## 共享包
+
+管理端和大屏通过 pnpm 的 Git 子目录依赖使用 [park-shared](https://github.com/dxhcode/park-shared)（锁定提交 `a1313c638eec7a9d3cf2fcd2a0aacc095fe0551f`）：
+
+| 包 | 用在哪里 |
+| --- | --- |
+| `@park/theme` | `applyParkTheme`、管理端 / 大屏的 ant-design-vue 主题，以及大屏折线、柱状、环形图 option |
+| `@park/components` | 列表空态 `EmptyState`、大屏面板 `GlassCard`、指标滚动条 `KpiTicker`、路由切换 `RouteMotion` |
+| `@park/mock` | 三园名称、热线、负责人和产业结构；列表关键字用 `searchByFields` |
+
+`pnpm install` 会拉取该仓库并执行各包的 `prepare` 编译。干净环境不需要再克隆一份，也不需要子模块。根目录 `pnpm-workspace.yaml` 的 `onlyBuiltDependencies` 允许这三个包运行构建脚本。
+
+演示账号仍是下面三张名片，密码仍是 `park2026`，任意非空账号也能进入。报修、缴费、管理端台账，以及驾驶舱里的通行、负荷、工单墙等运营数字仍写在本仓库：共享主数据是小样本，换成它会让驾驶舱只剩几家企业。
 
 ## 演示登录
 
@@ -73,7 +87,10 @@ pnpm dev
 
 ```bash
 pnpm pages:build
+pnpm pages:publish
 ```
+
+`pages:publish` 会再构建一次，并把 `dist/` 根目录强制推到 `dist` 分支（历史以静态文件为准）。工作区有未提交改动时脚本会退出，需先提交。推送使用当前 `origin` 地址。
 
 产物目录：
 

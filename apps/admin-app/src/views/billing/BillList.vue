@@ -2,6 +2,7 @@
 import { computed, reactive } from "vue";
 import { useRouter } from "vue-router";
 import { message } from "ant-design-vue";
+import { searchByFields } from "@park/mock";
 import { parkByKey, screenHref, shanghaiToday } from "@park/shared";
 import { billStatusColor, billTypes, paidOf, remainOf, statusOf, type Bill } from "@/data/bills";
 import ListEmpty from "@/components/ListEmpty.vue";
@@ -48,10 +49,8 @@ const stats = computed(() => {
 });
 
 const filtered = computed(() => {
-  const keyword = filters.keyword.trim().toLowerCase();
-  return rows.value.filter((item) => {
-    const haystack = `${item.code} ${item.company} ${item.room} ${item.building} ${item.contact}`.toLowerCase();
-    if (keyword && !haystack.includes(keyword)) return false;
+  const matched = searchByFields(rows.value, filters.keyword, ["code", "company", "room", "building", "contact"]);
+  return matched.filter((item) => {
     if (filters.status && item.status !== filters.status) return false;
     if (filters.type && item.type !== filters.type) return false;
     if (filters.period.trim() && !item.period.includes(filters.period.trim())) return false;

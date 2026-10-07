@@ -18,6 +18,7 @@ import {
   type ParkKey,
   type SessionUser,
 } from "@park/shared";
+import { RouteMotion } from "@park/components";
 import KpiTicker from "@/components/KpiTicker.vue";
 import { cockpitOf } from "@/data/parks";
 import { scenes } from "@/scenes";
@@ -130,9 +131,9 @@ onUnmounted(() => {
 
     <main class="stage">
       <router-view v-slot="{ Component }">
-        <transition name="scene-fade" mode="out-in">
+        <RouteMotion>
           <component :is="Component" :key="route.path" />
-        </transition>
+        </RouteMotion>
       </router-view>
     </main>
 

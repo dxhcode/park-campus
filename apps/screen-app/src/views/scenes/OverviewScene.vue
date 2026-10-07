@@ -37,7 +37,7 @@ const money = computed(() =>
       <article><span>逾期账单</span><strong><CountUp :value="park.overdueBills" /><em>笔</em></strong></article>
     </div>
     <div class="layout-overview">
-      <GlassPanel title="产业结构" :extra="`${park.companies} 家`">
+      <GlassPanel title="产业结构" extra="从业人数">
         <EChart :option="industries" />
       </GlassPanel>
       <GlassPanel title="园区空间" :extra="park.area">
